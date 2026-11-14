@@ -1,18 +1,17 @@
 import { motion } from 'motion/react'
-import { CATEGORIES, SIZE_BY_ID, type CategoryId } from '../../data/menu'
+import { CATEGORIES, SIZE_BY_ID } from '../../data/menu'
+import { useT } from '../../i18n/useLocale'
 import { useBowlStore } from '../../store/bowlStore'
 
-interface StepTabsProps {
-  active: CategoryId
-  onChange: (id: CategoryId) => void
-}
-
-export function StepTabs({ active, onChange }: StepTabsProps) {
+export function StepTabs() {
+  const t = useT()
+  const active = useBowlStore((s) => s.step)
+  const setStep = useBowlStore((s) => s.setStep)
   const size = useBowlStore((s) => s.size)
   const selection = useBowlStore((s) => s.selection)
 
   return (
-    <div role="tablist" aria-label="Pasos para armar tu bowl" className="flex flex-wrap gap-1">
+    <div role="tablist" aria-label={t.builder.steps} className="flex flex-wrap gap-1">
       {CATEGORIES.map((c) => {
         const isActive = c.id === active
         const count = selection[c.id].length
@@ -25,7 +24,7 @@ export function StepTabs({ active, onChange }: StepTabsProps) {
             id={`tab-${c.id}`}
             aria-selected={isActive}
             aria-controls={`panel-${c.id}`}
-            onClick={() => onChange(c.id)}
+            onClick={() => setStep(c.id)}
             className="relative shrink-0 rounded-full px-4 py-2 text-sm font-bold whitespace-nowrap focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-coral"
           >
             {isActive && (
@@ -37,7 +36,7 @@ export function StepTabs({ active, onChange }: StepTabsProps) {
             )}
             <span className={`relative flex items-center gap-2 ${isActive ? 'text-white' : 'text-nori/70'}`}>
               <span>
-                {c.step}. {c.label}
+                {c.step}. {t.categories[c.id].label}
               </span>
               <span
                 className={`rounded-full px-1.5 text-xs tabular-nums ${

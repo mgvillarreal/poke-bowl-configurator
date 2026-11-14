@@ -1,4 +1,5 @@
 import { CATEGORIES, INGREDIENT_BY_ID, SIZE_BY_ID, type BowlConfig, type Ingredient } from '../data/menu'
+import type { Messages } from '../i18n/messages'
 
 /** Todos los ingredientes elegidos, en orden de categoría */
 export function selectedIngredients(config: BowlConfig): Ingredient[] {
@@ -15,10 +16,15 @@ export function bowlTotals(config: BowlConfig) {
   }
 }
 
+/** Ingredientes con costo extra, para el desglose del checkout */
+export const premiumIngredients = (config: BowlConfig) => selectedIngredients(config).filter((i) => i.price > 0)
+
+export const ingredientName = (t: Messages, id: string) => t.ingredients[id] ?? id
+
 /** Nombre corto del bowl a partir de sus proteínas y la salsa */
-export function bowlName(config: BowlConfig): string {
-  const proteins = config.selection.protein.map((id) => INGREDIENT_BY_ID[id].name)
-  const sauce = config.selection.sauce[0]
-  const main = proteins.length ? proteins.join(' + ') : 'Veggie'
-  return sauce ? `${main} · ${INGREDIENT_BY_ID[sauce].name}` : main
+export function bowlName(config: BowlConfig, t: Messages): string {
+  const { protein, sauce } = config.selection
+  if (selectedIngredients(config).length === 0) return t.builder.emptyName
+  const main = protein.length ? protein.map((id) => ingredientName(t, id)).join(' + ') : t.builder.veggie
+  return sauce[0] ? `${main} · ${ingredientName(t, sauce[0])}` : main
 }

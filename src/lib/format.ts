@@ -1,9 +1,13 @@
 import { CURRENCY } from '../data/menu'
 
-const money = new Intl.NumberFormat('es-MX', {
-  style: 'currency',
-  currency: CURRENCY,
-  maximumFractionDigits: 0,
-})
+const formatters = new Map<string, Intl.NumberFormat>()
 
-export const formatMoney = (value: number) => money.format(value)
+/** Precio en la moneda del menú, con el formato del idioma activo */
+export function formatMoney(value: number, intl: string): string {
+  let formatter = formatters.get(intl)
+  if (!formatter) {
+    formatter = new Intl.NumberFormat(intl, { style: 'currency', currency: CURRENCY, maximumFractionDigits: 0 })
+    formatters.set(intl, formatter)
+  }
+  return formatter.format(value)
+}

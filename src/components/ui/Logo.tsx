@@ -1,13 +1,14 @@
 interface LogoProps {
+  label: string
   light?: boolean
 }
 
 /** NAMI + ola + ナミ (ola en japonés) */
-export function Logo({ light = false }: LogoProps) {
+export function Logo({ label, light = false }: LogoProps) {
   const color = light ? 'text-rice' : 'text-nori'
 
   return (
-    <a href="#inicio" className={`flex items-center gap-2 ${color}`} aria-label="Nami Poke Bar, inicio">
+    <a href="#inicio" className={`flex shrink-0 items-center gap-2 ${color}`} aria-label={label}>
       <svg viewBox="0 0 40 40" className="h-9 w-9" aria-hidden>
         <circle cx={20} cy={20} r={19} fill="#ff6b5a" stroke="currentColor" strokeWidth={2} />
         <path
@@ -20,7 +21,7 @@ export function Logo({ light = false }: LogoProps) {
         <path d="M7 29h26" stroke="#fff6e9" strokeWidth={2.6} strokeLinecap="round" />
       </svg>
       <span className="font-display text-2xl leading-none tracking-wide">NAMI</span>
-      <span className="font-display text-sm text-coral">ナミ</span>
+      <span className="hidden font-display text-sm text-coral min-[400px]:inline">ナミ</span>
     </a>
   )
 }

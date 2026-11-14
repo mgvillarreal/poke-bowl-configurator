@@ -1,5 +1,7 @@
 import { AnimatePresence, motion } from 'motion/react'
-import type { Ingredient } from '../../data/menu'
+import type { Ingredient, Tag } from '../../data/menu'
+import { useT } from '../../i18n/useLocale'
+import { ingredientName } from '../../lib/bowl'
 import { formatMoney } from '../../lib/format'
 import { IngredientArt } from '../art/IngredientArt'
 
@@ -11,13 +13,15 @@ interface IngredientCardProps {
   onToggle: () => void
 }
 
-const TAG_STYLES: Record<NonNullable<Ingredient['tag']>, string> = {
-  Popular: 'bg-mango',
-  Picante: 'bg-coral text-white',
-  Nuevo: 'bg-matcha',
+const TAG_STYLES: Record<Tag, string> = {
+  popular: 'bg-mango',
+  spicy: 'bg-coral text-white',
+  new: 'bg-matcha',
 }
 
 export function IngredientCard({ ingredient, selected, dimmed, onToggle }: IngredientCardProps) {
+  const t = useT()
+
   return (
     <motion.button
       type="button"
@@ -25,16 +29,14 @@ export function IngredientCard({ ingredient, selected, dimmed, onToggle }: Ingre
       onClick={onToggle}
       whileTap={{ scale: 0.95 }}
       className={`group relative flex flex-col items-center rounded-3xl border-2 p-3 text-center transition-[background-color,border-color,opacity,box-shadow] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-coral ${
-        selected
-          ? 'border-nori bg-sakura shadow-sticker'
-          : 'border-nori/10 bg-white hover:border-nori/40'
+        selected ? 'border-nori bg-sakura shadow-sticker' : 'border-nori/10 bg-white hover:border-nori/40'
       } ${dimmed && !selected ? 'opacity-50' : ''}`}
     >
       {ingredient.tag && (
         <span
           className={`absolute -top-2 left-3 z-10 rotate-[-4deg] rounded-full border-2 border-nori px-2 text-[11px] font-bold ${TAG_STYLES[ingredient.tag]}`}
         >
-          {ingredient.tag}
+          {t.tags[ingredient.tag]}
         </span>
       )}
 
@@ -58,9 +60,9 @@ export function IngredientCard({ ingredient, selected, dimmed, onToggle }: Ingre
       <span className="mb-2 block aspect-square w-full max-w-28 rounded-full bg-rice p-1.5 transition-transform duration-300 group-hover:scale-105 group-hover:rotate-6">
         <IngredientArt ingredient={ingredient} />
       </span>
-      <span className="text-sm leading-tight font-bold">{ingredient.name}</span>
+      <span className="text-sm leading-tight font-bold">{ingredientName(t, ingredient.id)}</span>
       <span className="mt-0.5 text-xs text-nori/60">
-        {ingredient.price > 0 ? `+${formatMoney(ingredient.price)}` : 'Incluido'} · {ingredient.kcal} kcal
+        {ingredient.price > 0 ? `+${formatMoney(ingredient.price, t.intl)}` : t.card.included} · {ingredient.kcal} kcal
       </span>
     </motion.button>
   )

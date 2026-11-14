@@ -1,9 +1,11 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect } from 'react'
+import { useT } from '../../i18n/useLocale'
 import { useBowlStore } from '../../store/bowlStore'
 
-/** Aviso flotante (límites, bowl agregado…). Se cierra solo. */
+/** Aviso flotante (límites, bowl vacío…). Se traduce al mostrarse y se cierra solo. */
 export function Toast() {
+  const t = useT()
   const notice = useBowlStore((s) => s.notice)
   const dismiss = useBowlStore((s) => s.dismissNotice)
 
@@ -14,7 +16,7 @@ export function Toast() {
   }, [notice, dismiss])
 
   return (
-    <div aria-live="polite" className="pointer-events-none fixed inset-x-4 bottom-6 z-50 flex justify-center">
+    <div aria-live="polite" className="pointer-events-none fixed inset-x-4 bottom-6 z-[60] flex justify-center">
       <AnimatePresence mode="wait">
         {notice && (
           <motion.p
@@ -25,7 +27,7 @@ export function Toast() {
             exit={{ opacity: 0, y: 12, scale: 0.97 }}
             transition={{ type: 'spring', stiffness: 320, damping: 24 }}
           >
-            {notice.text}
+            {t.notice(notice.message)}
           </motion.p>
         )}
       </AnimatePresence>

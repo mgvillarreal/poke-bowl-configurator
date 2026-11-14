@@ -52,7 +52,7 @@ A perfectly round, flat, even layer of [INGREDIENTE], shaped as a clean full cir
 
 Plantilla:
 ```
-A compact, neat, slightly oval pile of [INGREDIENTE], arranged tightly together the way it would sit in a section of a poke bowl, the pile fills about 80% of the frame.
+A compact, neat, slightly oval pile of [INGREDIENTE], arranged tightly together the way it would sit in a section of a poke bowl, the pile fills about 80% of the frame. Shot from directly overhead at exactly 90 degrees (top-down flat lay). Professional high-end food photography, soft diffused daylight coming from the upper left, very subtle natural shading, no hard shadows, no drop shadow. Vibrant, fresh, appetizing natural colors, crisp detail, glossy where appropriate. Isolated on a fully transparent background, PNG. No bowl, no plate, no table, no props, no text, no hands. Centered in the frame. Square 1:1.
 ```
 
 | Archivo | [INGREDIENTE] |
@@ -88,7 +88,7 @@ Estas van **encima** de todo el bowl, así que deben ser solo los hilos de salsa
 
 Plantilla:
 ```
-Elegant thin drizzle lines of [SALSA] in a loose zigzag pattern covering a round area, only the sauce itself, nothing underneath it. The drizzle area fills about 85% of the frame.
+Elegant thin drizzle lines of [SALSA] in a loose zigzag pattern covering a round area, only the sauce itself, nothing underneath it. The drizzle area fills about 85% of the frame. Shot from directly overhead at exactly 90 degrees (top-down flat lay). Professional high-end food photography, soft diffused daylight coming from the upper left, very subtle natural shading, no hard shadows, no drop shadow. Vibrant, fresh, appetizing natural colors, crisp detail, glossy where appropriate. Isolated on a fully transparent background, PNG. No bowl, no plate, no table, no props, no text, no hands. Centered in the frame. Square 1:1.
 ```
 
 | Archivo | [SALSA] |
@@ -104,7 +104,7 @@ Elegant thin drizzle lines of [SALSA] in a loose zigzag pattern covering a round
 
 Plantilla:
 ```
-A light, natural scatter of [TOPPING] spread loosely over a round area, as if sprinkled over a poke bowl, only the topping itself. The scatter area fills about 85% of the frame.
+A light, natural scatter of [TOPPING] spread loosely over a round area, as if sprinkled over a poke bowl, only the topping itself. The scatter area fills about 85% of the frame. Shot from directly overhead at exactly 90 degrees (top-down flat lay). Professional high-end food photography, soft diffused daylight coming from the upper left, very subtle natural shading, no hard shadows, no drop shadow. Vibrant, fresh, appetizing natural colors, crisp detail, glossy where appropriate. Isolated on a fully transparent background, PNG. No bowl, no plate, no table, no props, no text, no hands. Centered in the frame. Square 1:1.
 ```
 
 | Archivo | [TOPPING] |
@@ -136,10 +136,10 @@ Editorial food photography for a vibrant modern Asian poke restaurant brand. Bri
 
 - [X] bowl (1)
 - [X] bases (4)
-- [ ] proteínas (5)
-- [ ] complementos (8)
-- [ ] salsas (4)
-- [ ] toppings (5)
+- [X] proteínas (5)
+- [X] complementos (8)
+- [X] salsas (4)
+- [2] toppings (5)
 - [ ] escenas (3)
 
 **Para empezar rápido:** con el bowl, 1 base, 2 proteínas, 3 complementos y 1 salsa ya puedo armar y animar el configurador mientras generas el resto.

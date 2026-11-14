@@ -1,0 +1,435 @@
+import type { CategoryId, SizeId, Tag } from '../data/menu'
+import type { NoticeMessage } from '../store/bowlStore'
+
+export type Locale = 'es' | 'en'
+export type DeliveryMode = 'pickup' | 'delivery'
+
+export interface Messages {
+  /** Locale para Intl (moneda, horas) */
+  intl: string
+  htmlLang: string
+  meta: { title: string }
+  header: { home: string; nav: string; build: string; how: string; order: string; language: string }
+  topBar: string
+  hero: {
+    badge: string
+    line1: string
+    line2: string
+    accent: string
+    lead: string
+    ctaBuild: string
+    ctaHow: string
+    photoAlt: string
+    stickers: [string, string, string]
+  }
+  builder: {
+    eyebrow: string
+    title: string
+    surprise: string
+    clear: string
+    yourBowl: (size: string) => string
+    emptyName: string
+    emptyHint: string
+    veggie: string
+    chooseOne: string
+    upTo: (n: number) => string
+    chosen: (n: number) => string
+    next: (label: string) => string
+    sizeGroup: string
+    steps: string
+  }
+  categories: Record<CategoryId, { label: string; title: string; noun: [string, string] }>
+  sizes: Record<SizeId, { label: string; description: string }>
+  tags: Record<Tag, string>
+  card: { included: string }
+  summary: { total: string; protein: string; add: string }
+  notice: (message: NoticeMessage) => string
+  how: { eyebrow: string; title: string; steps: { title: string; text: string }[] }
+  footer: { tagline: string; disclaimer: string; madeWith: string }
+  checkout: {
+    close: string
+    steps: [string, string, string]
+    reviewTitle: string
+    detailsTitle: string
+    doneTitle: string
+    bowlLine: (size: string) => string
+    quantity: string
+    decrease: string
+    increase: string
+    notes: string
+    notesPlaceholder: string
+    name: string
+    phone: string
+    phoneHint: string
+    required: string
+    today: string
+    mode: string
+    modes: Record<DeliveryMode, { label: string; detail: (fee: string) => string }>
+    address: string
+    addressPlaceholder: string
+    when: string
+    asap: string
+    schedule: string
+    time: string
+    payment: string
+    cash: string
+    card: string
+    subtotal: string
+    deliveryFee: string
+    free: string
+    total: string
+    continue: string
+    back: string
+    confirm: (total: string) => string
+    processing: string
+    errors: { name: string; phone: string; address: string }
+    orderNumber: string
+    eta: (mode: DeliveryMode, slot: string | null) => string
+    demoNote: string
+    another: string
+    done: string
+  }
+  ingredients: Record<string, string>
+}
+
+const es: Messages = {
+  intl: 'es-MX',
+  htmlLang: 'es',
+  meta: { title: 'Nami Poke Bar · Arma tu bowl' },
+  header: {
+    home: 'Nami Poke Bar, inicio',
+    nav: 'Principal',
+    build: 'Arma tu bowl',
+    how: 'Cómo funciona',
+    order: 'Ordenar',
+    language: 'Idioma',
+  },
+  topBar: '🍚 Recoge en 15 min · Envío a domicilio',
+  hero: {
+    badge: 'Poke bar · ポケ',
+    line1: 'Arma',
+    line2: 'tu',
+    accent: 'ola.',
+    lead: 'Poke bowls frescos, a tu manera. Elige base, proteína y toppings, y míralo armarse en tiempo real.',
+    ctaBuild: 'Armar mi bowl →',
+    ctaHow: '¿Cómo funciona?',
+    photoAlt: 'Poke bowl de salmón, atún, aguacate y mango',
+    stickers: ['100% fresco', 'Listo en 15 min', '¡Nuevo! Mango 🥭'],
+  },
+  builder: {
+    eyebrow: 'Paso a paso',
+    title: 'Arma tu bowl',
+    surprise: '🎲 Sorpréndeme',
+    clear: 'Vaciar bowl',
+    yourBowl: (size) => `Tu bowl · ${size}`,
+    emptyName: 'Tu bowl está vacío',
+    emptyHint: 'Empieza eligiendo tu base',
+    veggie: 'Veggie',
+    chooseOne: 'Elige 1',
+    upTo: (n) => `Hasta ${n}`,
+    chosen: (n) => `${n} elegido${n === 1 ? '' : 's'}`,
+    next: (label) => `Siguiente: ${label} →`,
+    sizeGroup: 'Tamaño del bowl',
+    steps: 'Pasos para armar tu bowl',
+  },
+  categories: {
+    base: { label: 'Base', title: 'Elige tu base', noun: ['base', 'bases'] },
+    protein: { label: 'Proteína', title: 'Elige tu proteína', noun: ['proteína', 'proteínas'] },
+    extra: { label: 'Complementos', title: 'Suma color', noun: ['complemento', 'complementos'] },
+    sauce: { label: 'Salsa', title: 'Ponle salsa', noun: ['salsa', 'salsas'] },
+    topping: { label: 'Toppings', title: 'El toque final', noun: ['topping', 'toppings'] },
+  },
+  sizes: {
+    regular: { label: 'Regular', description: '1 proteína · 4 complementos' },
+    grande: { label: 'Grande', description: '2 proteínas · 6 complementos' },
+  },
+  tags: { popular: 'Popular', spicy: 'Picante', new: 'Nuevo' },
+  card: { included: 'Incluido' },
+  summary: { total: 'Total', protein: 'g proteína', add: 'Agregar al pedido' },
+  notice: (m) => {
+    switch (m.type) {
+      case 'limit': {
+        const noun = es.categories[m.category].noun[m.limit === 1 ? 0 : 1]
+        return m.upsell
+          ? `El Regular lleva hasta ${m.limit} ${noun}. ¡Cámbiate a Grande para más!`
+          : `Máximo ${m.limit} ${noun}. Quita uno para cambiarlo.`
+      }
+      case 'resized':
+        return `Ajustamos tu bowl al tamaño ${es.sizes[m.size].label}.`
+      case 'surprise':
+        return '🎲 ¡Bowl sorpresa! Ajústalo a tu gusto.'
+      case 'needBase':
+        return 'Primero elige una base para tu bowl.'
+      case 'needProtein':
+        return 'Elige al menos una proteína (o tofu) para tu bowl.'
+    }
+  },
+  how: {
+    eyebrow: 'Así de fácil',
+    title: 'Cómo funciona',
+    steps: [
+      { title: 'Elige tu base', text: 'Arroz de sushi, integral, quinoa o un mix de hojas frescas.' },
+      { title: 'Súmale color', text: 'Proteína del día, frutas, verduras, salsas y toppings crujientes.' },
+      { title: 'Recoge en 15 min', text: 'Lo preparamos al momento y te avisamos cuando esté listo.' },
+    ],
+  },
+  footer: {
+    tagline: 'Poke bowls frescos, armados a tu manera.',
+    disclaimer:
+      'Nami Poke Bar es una marca ficticia creada como proyecto conceptual de portafolio. Menú, precios y pedidos son de demostración.',
+    madeWith: 'Hecho con cariño.',
+  },
+  checkout: {
+    close: 'Cerrar',
+    steps: ['Tu pedido', 'Tus datos', 'Confirmación'],
+    reviewTitle: 'Revisa tu bowl',
+    detailsTitle: '¿A nombre de quién?',
+    doneTitle: '¡Pedido confirmado!',
+    bowlLine: (size) => `Bowl ${size}`,
+    quantity: 'Cantidad',
+    decrease: 'Quitar uno',
+    increase: 'Agregar uno',
+    notes: 'Notas para la cocina (opcional)',
+    notesPlaceholder: 'Ej. sin cebolla, salsa aparte…',
+    name: 'Nombre',
+    phone: 'Teléfono',
+    phoneHint: '10 dígitos',
+    required: 'Obligatorio',
+    today: 'Hoy',
+    mode: '¿Cómo lo quieres?',
+    modes: {
+      pickup: { label: 'Recoger en tienda', detail: () => 'Nami · gratis' },
+      delivery: { label: 'A domicilio', detail: (fee) => `+${fee} · ~35 min` },
+    },
+    address: 'Dirección de entrega',
+    addressPlaceholder: 'Calle, número y colonia',
+    when: '¿Cuándo?',
+    asap: 'Lo antes posible',
+    schedule: 'Programar',
+    time: 'Hora',
+    payment: 'Pago al recibir',
+    cash: 'Efectivo',
+    card: 'Tarjeta en terminal',
+    subtotal: 'Subtotal',
+    deliveryFee: 'Envío',
+    free: 'Gratis',
+    total: 'Total',
+    continue: 'Continuar',
+    back: '← Volver',
+    confirm: (total) => `Confirmar pedido · ${total}`,
+    processing: 'Enviando tu pedido a la cocina…',
+    errors: {
+      name: 'Escribe tu nombre.',
+      phone: 'Escribe un teléfono de 10 dígitos.',
+      address: 'Escribe la dirección de entrega.',
+    },
+    orderNumber: 'Número de pedido',
+    eta: (mode, slot) => {
+      const when = slot ? `a las ${slot}` : mode === 'pickup' ? 'en unos 15 min' : 'en unos 35 min'
+      return mode === 'pickup' ? `Tu bowl estará listo ${when} en Nami.` : `Tu bowl llegará ${when}.`
+    },
+    demoNote: 'Es una demo: no se hizo ningún cargo ni pedido real.',
+    another: 'Armar otro bowl',
+    done: 'Listo',
+  },
+  ingredients: {
+    'rice-white': 'Arroz de sushi',
+    'rice-brown': 'Arroz integral',
+    quinoa: 'Quinoa tricolor',
+    greens: 'Mix de hojas',
+    tuna: 'Atún shoyu',
+    salmon: 'Salmón',
+    shrimp: 'Camarón',
+    'chicken-teriyaki': 'Pollo teriyaki',
+    tofu: 'Tofu crujiente',
+    avocado: 'Aguacate',
+    cucumber: 'Pepino',
+    edamame: 'Edamame',
+    mango: 'Mango',
+    corn: 'Elote',
+    'red-onion': 'Cebolla encurtida',
+    carrot: 'Zanahoria',
+    wakame: 'Alga wakame',
+    ponzu: 'Ponzu',
+    'spicy-mayo': 'Spicy mayo',
+    teriyaki: 'Teriyaki',
+    sesame: 'Aderezo de ajonjolí',
+    'sesame-seeds': 'Ajonjolí',
+    scallions: 'Cebollín',
+    nori: 'Nori',
+    'crispy-onion': 'Cebolla crujiente',
+    masago: 'Masago',
+  },
+}
+
+const en: Messages = {
+  intl: 'en-US',
+  htmlLang: 'en',
+  meta: { title: 'Nami Poke Bar · Build your bowl' },
+  header: {
+    home: 'Nami Poke Bar, home',
+    nav: 'Main',
+    build: 'Build your bowl',
+    how: 'How it works',
+    order: 'Order',
+    language: 'Language',
+  },
+  topBar: '🍚 Pick up in 15 min · Delivery available',
+  hero: {
+    badge: 'Poke bar · ポケ',
+    line1: 'Ride',
+    line2: 'your',
+    accent: 'wave.',
+    lead: 'Fresh poke bowls, your way. Pick a base, protein and toppings, and watch it come together in real time.',
+    ctaBuild: 'Build my bowl →',
+    ctaHow: 'How it works',
+    photoAlt: 'Poke bowl with salmon, tuna, avocado and mango',
+    stickers: ['100% fresh', 'Ready in 15 min', 'New! Mango 🥭'],
+  },
+  builder: {
+    eyebrow: 'Step by step',
+    title: 'Build your bowl',
+    surprise: '🎲 Surprise me',
+    clear: 'Clear bowl',
+    yourBowl: (size) => `Your bowl · ${size}`,
+    emptyName: 'Your bowl is empty',
+    emptyHint: 'Start by picking your base',
+    veggie: 'Veggie',
+    chooseOne: 'Pick 1',
+    upTo: (n) => `Up to ${n}`,
+    chosen: (n) => `${n} selected`,
+    next: (label) => `Next: ${label} →`,
+    sizeGroup: 'Bowl size',
+    steps: 'Steps to build your bowl',
+  },
+  categories: {
+    base: { label: 'Base', title: 'Choose your base', noun: ['base', 'bases'] },
+    protein: { label: 'Protein', title: 'Choose your protein', noun: ['protein', 'proteins'] },
+    extra: { label: 'Mix-ins', title: 'Add some color', noun: ['mix-in', 'mix-ins'] },
+    sauce: { label: 'Sauce', title: 'Sauce it up', noun: ['sauce', 'sauces'] },
+    topping: { label: 'Toppings', title: 'The finishing touch', noun: ['topping', 'toppings'] },
+  },
+  sizes: {
+    regular: { label: 'Regular', description: '1 protein · 4 mix-ins' },
+    grande: { label: 'Large', description: '2 proteins · 6 mix-ins' },
+  },
+  tags: { popular: 'Popular', spicy: 'Spicy', new: 'New' },
+  card: { included: 'Included' },
+  summary: { total: 'Total', protein: 'g protein', add: 'Add to order' },
+  notice: (m) => {
+    switch (m.type) {
+      case 'limit': {
+        const noun = en.categories[m.category].noun[m.limit === 1 ? 0 : 1]
+        return m.upsell
+          ? `A Regular bowl takes up to ${m.limit} ${noun}. Go Large for more!`
+          : `Up to ${m.limit} ${noun}. Remove one to swap.`
+      }
+      case 'resized':
+        return `We adjusted your bowl to ${en.sizes[m.size].label}.`
+      case 'surprise':
+        return '🎲 Surprise bowl! Tweak it to your taste.'
+      case 'needBase':
+        return 'Pick a base for your bowl first.'
+      case 'needProtein':
+        return 'Pick at least one protein (or tofu) for your bowl.'
+    }
+  },
+  how: {
+    eyebrow: 'Easy as that',
+    title: 'How it works',
+    steps: [
+      { title: 'Pick your base', text: 'Sushi rice, brown rice, quinoa or fresh mixed greens.' },
+      { title: 'Add some color', text: 'Protein of the day, fruit, veggies, sauces and crunchy toppings.' },
+      { title: 'Pick up in 15 min', text: 'We make it fresh and let you know when it’s ready.' },
+    ],
+  },
+  footer: {
+    tagline: 'Fresh poke bowls, made your way.',
+    disclaimer:
+      'Nami Poke Bar is a fictional brand created as a portfolio concept project. Menu, prices and orders are for demo purposes only.',
+    madeWith: 'Made with care.',
+  },
+  checkout: {
+    close: 'Close',
+    steps: ['Your order', 'Your details', 'Confirmation'],
+    reviewTitle: 'Review your bowl',
+    detailsTitle: 'Who’s it for?',
+    doneTitle: 'Order confirmed!',
+    bowlLine: (size) => `${size} bowl`,
+    quantity: 'Quantity',
+    decrease: 'Remove one',
+    increase: 'Add one',
+    notes: 'Notes for the kitchen (optional)',
+    notesPlaceholder: 'E.g. no onion, sauce on the side…',
+    name: 'Name',
+    phone: 'Phone',
+    phoneHint: '10 digits',
+    required: 'Required',
+    today: 'Today',
+    mode: 'How do you want it?',
+    modes: {
+      pickup: { label: 'Pick up in store', detail: () => 'Nami · free' },
+      delivery: { label: 'Delivery', detail: (fee) => `+${fee} · ~35 min` },
+    },
+    address: 'Delivery address',
+    addressPlaceholder: 'Street, number and neighborhood',
+    when: 'When?',
+    asap: 'As soon as possible',
+    schedule: 'Schedule',
+    time: 'Time',
+    payment: 'Pay on arrival',
+    cash: 'Cash',
+    card: 'Card on terminal',
+    subtotal: 'Subtotal',
+    deliveryFee: 'Delivery',
+    free: 'Free',
+    total: 'Total',
+    continue: 'Continue',
+    back: '← Back',
+    confirm: (total) => `Place order · ${total}`,
+    processing: 'Sending your order to the kitchen…',
+    errors: {
+      name: 'Please enter your name.',
+      phone: 'Please enter a 10-digit phone number.',
+      address: 'Please enter the delivery address.',
+    },
+    orderNumber: 'Order number',
+    eta: (mode, slot) => {
+      const when = slot ? `at ${slot}` : mode === 'pickup' ? 'in about 15 min' : 'in about 35 min'
+      return mode === 'pickup' ? `Your bowl will be ready ${when} at Nami.` : `Your bowl will arrive ${when}.`
+    },
+    demoNote: 'This is a demo: no charge was made and no real order was placed.',
+    another: 'Build another bowl',
+    done: 'Done',
+  },
+  ingredients: {
+    'rice-white': 'Sushi rice',
+    'rice-brown': 'Brown rice',
+    quinoa: 'Tri-color quinoa',
+    greens: 'Mixed greens',
+    tuna: 'Shoyu tuna',
+    salmon: 'Salmon',
+    shrimp: 'Shrimp',
+    'chicken-teriyaki': 'Teriyaki chicken',
+    tofu: 'Crispy tofu',
+    avocado: 'Avocado',
+    cucumber: 'Cucumber',
+    edamame: 'Edamame',
+    mango: 'Mango',
+    corn: 'Corn',
+    'red-onion': 'Pickled onion',
+    carrot: 'Carrot',
+    wakame: 'Wakame seaweed',
+    ponzu: 'Ponzu',
+    'spicy-mayo': 'Spicy mayo',
+    teriyaki: 'Teriyaki',
+    sesame: 'Sesame dressing',
+    'sesame-seeds': 'Sesame seeds',
+    scallions: 'Scallions',
+    nori: 'Nori',
+    'crispy-onion': 'Crispy onion',
+    masago: 'Masago',
+  },
+}
+
+export const MESSAGES: Record<Locale, Messages> = { es, en }

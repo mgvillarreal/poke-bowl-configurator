@@ -6,6 +6,8 @@ import { BowlArt, IngredientArt } from '../art/IngredientArt'
 
 interface BowlProps {
   config: BowlConfig
+  /** Texto que aparece dentro del bowl cuando está vacío */
+  emptyHint?: string
   className?: string
 }
 
@@ -16,7 +18,7 @@ const itemSizeFor = (count: number) => (count <= 2 ? 44 : count <= 4 ? 38 : coun
  * El bowl visto desde arriba. Es una función de `config`:
  * base (disco) → montoncitos en círculo (proteínas y complementos) → salsas → toppings.
  */
-export function Bowl({ config, className = '' }: BowlProps) {
+export function Bowl({ config, emptyHint, className = '' }: BowlProps) {
   const { selection } = config
   const base = INGREDIENT_BY_ID[selection.base[0]]
   const ring = [...selection.protein, ...selection.extra].map((id) => INGREDIENT_BY_ID[id])
@@ -48,6 +50,21 @@ export function Bowl({ config, className = '' }: BowlProps) {
       <div className="absolute inset-0 drop-shadow-[0_18px_30px_rgba(20,26,58,0.35)]">
         <BowlArt />
       </div>
+
+      <AnimatePresence>
+        {emptyHint && signature === '' && (
+          <motion.p
+            key="empty"
+            className="absolute inset-0 flex items-center justify-center p-[24%] text-center font-display text-lg text-nori/45 sm:text-xl"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ delay: 0.25 }}
+          >
+            {emptyHint}
+          </motion.p>
+        )}
+      </AnimatePresence>
 
       {/* Base: llena el interior del bowl */}
       <AnimatePresence>

@@ -1,32 +1,50 @@
 import { create } from 'zustand'
 import {
   CATEGORIES,
-  CATEGORY_BY_ID,
   DEFAULT_BOWL,
+  EMPTY_SELECTION,
   INGREDIENT_BY_ID,
   SIZE_BY_ID,
   ingredientsOf,
   type BowlConfig,
+  type CategoryId,
   type Selection,
   type SizeId,
 } from '../data/menu'
 
+/**
+ * Los avisos se guardan como datos, no como texto:
+ * el Toast los traduce al idioma activo al mostrarlos.
+ */
+export type NoticeMessage =
+  | { type: 'limit'; category: CategoryId; limit: number; upsell: boolean }
+  | { type: 'resized'; size: SizeId }
+  | { type: 'surprise' }
+  | { type: 'needBase' }
+  | { type: 'needProtein' }
+
 interface Notice {
   id: number
-  text: string
+  message: NoticeMessage
 }
 
 interface BowlState extends BowlConfig {
+  step: CategoryId
   notice: Notice | null
+  checkoutOpen: boolean
+  setStep: (step: CategoryId) => void
   setSize: (size: SizeId) => void
   toggle: (ingredientId: string) => void
   surprise: () => void
-  notify: (text: string) => void
+  clear: () => void
+  notify: (message: NoticeMessage) => void
   dismissNotice: () => void
+  openCheckout: () => void
+  closeCheckout: () => void
 }
 
 let noticeId = 0
-const makeNotice = (text: string): Notice => ({ id: ++noticeId, text })
+const makeNotice = (message: NoticeMessage): Notice => ({ id: ++noticeId, message })
 
 /** Recorta cada categoría al límite del tamaño. Devuelve si hubo que quitar algo. */
 function fitToSize(selection: Selection, size: SizeId): { selection: Selection; trimmed: boolean } {
@@ -46,54 +64,53 @@ function pickRandom<T>(list: T[], count: number): T[] {
   return [...list].sort(() => Math.random() - 0.5).slice(0, count)
 }
 
+export const countSelected = (selection: Selection) =>
+  CATEGORIES.reduce((sum, c) => sum + selection[c.id].length, 0)
+
 export const useBowlStore = create<BowlState>((set, get) => ({
   ...DEFAULT_BOWL,
+  step: 'base',
   notice: null,
+  checkoutOpen: false,
+
+  setStep: (step) => set({ step }),
 
   setSize: (size) => {
     const { selection, trimmed } = fitToSize(get().selection, size)
     set({
       size,
       selection,
-      notice: trimmed ? makeNotice(`Ajustamos tu bowl al tamaño ${SIZE_BY_ID[size].label}.`) : get().notice,
+      notice: trimmed ? makeNotice({ type: 'resized', size }) : get().notice,
     })
   },
 
   toggle: (ingredientId) => {
     const { size, selection } = get()
-    const ingredient = INGREDIENT_BY_ID[ingredientId]
-    const category = CATEGORY_BY_ID[ingredient.category]
-    const current = selection[category.id]
-    const limit = SIZE_BY_ID[size].limits[category.id]
+    const category = INGREDIENT_BY_ID[ingredientId].category
+    const current = selection[category]
+    const limit = SIZE_BY_ID[size].limits[category]
 
     let next: string[]
     if (current.includes(ingredientId)) {
-      // La base es obligatoria: no se puede quedar vacía
-      if (category.id === 'base') return
+      // La base no se quita tocándola: se cambia por otra (o se vacía todo el bowl)
+      if (category === 'base') return
       next = current.filter((id) => id !== ingredientId)
     } else if (limit === 1) {
       next = [ingredientId]
     } else if (current.length >= limit) {
-      const [one, many] = category.noun
-      const upsell = size === 'regular' && SIZE_BY_ID.grande.limits[category.id] > limit
-      set({
-        notice: makeNotice(
-          upsell
-            ? `El Regular lleva hasta ${limit} ${limit === 1 ? one : many}. ¡Cámbiate a Grande para más!`
-            : `Máximo ${limit} ${limit === 1 ? one : many}. Quita uno para cambiarlo.`,
-        ),
-      })
+      const upsell = size === 'regular' && SIZE_BY_ID.grande.limits[category] > limit
+      set({ notice: makeNotice({ type: 'limit', category, limit, upsell }) })
       return
     } else {
       next = [...current, ingredientId]
     }
 
-    set({ selection: { ...selection, [category.id]: next } })
+    set({ selection: { ...selection, [category]: next } })
   },
 
   surprise: () => {
     const limits = SIZE_BY_ID[get().size].limits
-    const ids = (category: keyof Selection, count: number) =>
+    const ids = (category: CategoryId, count: number) =>
       pickRandom(ingredientsOf(category), count).map((i) => i.id)
 
     set({
@@ -104,10 +121,16 @@ export const useBowlStore = create<BowlState>((set, get) => ({
         sauce: ids('sauce', 1),
         topping: ids('topping', 2),
       },
-      notice: makeNotice('🎲 ¡Bowl sorpresa! Ajústalo a tu gusto.'),
+      notice: makeNotice({ type: 'surprise' }),
     })
   },
 
-  notify: (text) => set({ notice: makeNotice(text) }),
+  // Sin aviso: el bowl vacío ya lo dice visualmente
+  clear: () => set({ selection: EMPTY_SELECTION, step: 'base', notice: null }),
+
+  notify: (message) => set({ notice: makeNotice(message) }),
   dismissNotice: () => set({ notice: null }),
+
+  openCheckout: () => set({ checkoutOpen: true, notice: null }),
+  closeCheckout: () => set({ checkoutOpen: false }),
 }))

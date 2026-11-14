@@ -1,14 +1,16 @@
 import { motion } from 'motion/react'
 import { SIZES } from '../../data/menu'
+import { useT } from '../../i18n/useLocale'
 import { formatMoney } from '../../lib/format'
 import { useBowlStore } from '../../store/bowlStore'
 
 export function SizeToggle() {
+  const t = useT()
   const size = useBowlStore((s) => s.size)
   const setSize = useBowlStore((s) => s.setSize)
 
   return (
-    <div role="radiogroup" aria-label="Tamaño del bowl" className="grid grid-cols-2 gap-1 rounded-2xl border-2 border-nori bg-white p-1">
+    <div role="radiogroup" aria-label={t.builder.sizeGroup} className="grid grid-cols-2 gap-1 rounded-2xl border-2 border-nori bg-white p-1">
       {SIZES.map((s) => {
         const active = s.id === size
         return (
@@ -29,10 +31,10 @@ export function SizeToggle() {
             )}
             <span className={`relative block ${active ? 'text-rice' : 'text-nori'}`}>
               <span className="flex items-baseline justify-between gap-2">
-                <span className="font-display text-lg">{s.label}</span>
-                <span className="font-bold">{formatMoney(s.price)}</span>
+                <span className="font-display text-lg">{t.sizes[s.id].label}</span>
+                <span className="font-bold">{formatMoney(s.price, t.intl)}</span>
               </span>
-              <span className={`text-xs ${active ? 'text-rice/75' : 'text-nori/60'}`}>{s.description}</span>
+              <span className={`text-xs ${active ? 'text-rice/75' : 'text-nori/60'}`}>{t.sizes[s.id].description}</span>
             </span>
           </button>
         )
