@@ -1,0 +1,37 @@
+@import 'tailwindcss';
+
+/* Nami Poke Bar: todos los colores y fuentes de la marca salen de aquí */
+@theme {
+  --color-coral: #ff6b5a;
+  --color-coral-dark: #e8503f;
+  --color-sakura: #ffe1db;
+  --color-mango: #ffc93c;
+  --color-matcha: #7bc67e;
+  --color-nori: #1f2a5a;
+  --color-rice: #fff6e9;
+
+  --font-display: 'Dela Gothic One', 'Zen Maru Gothic', system-ui, sans-serif;
+  --font-sans: 'Zen Maru Gothic', system-ui, sans-serif;
+
+  /* Sombra "sticker": bloque sólido desplazado, sin difuminar */
+  --shadow-sticker: 4px 4px 0 0 var(--color-nori);
+  --shadow-sticker-lg: 6px 6px 0 0 var(--color-nori);
+}
+
+html {
+  color-scheme: light;
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  background-color: var(--color-rice);
+  color: var(--color-nori);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
