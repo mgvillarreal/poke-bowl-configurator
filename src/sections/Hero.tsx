@@ -38,22 +38,25 @@ export function Hero() {
           <span className="inline-block -rotate-2 rounded-full border-2 border-nori bg-rice px-3 py-1 text-sm font-bold shadow-sticker">
             {t.hero.badge}
           </span>
-          <h1 className="mt-6 font-display text-6xl leading-[0.95] text-white sm:text-7xl">
+          <h1 className="mt-6 font-display text-6xl leading-[0.95] text-nori sm:text-7xl">
             {t.hero.line1}
             <br />
-            {t.hero.line2} <span className="text-nori">{t.hero.accent}</span>
+            {t.hero.line2}{' '}
+            <span className="mt-2 inline-block -rotate-2 rounded-2xl bg-nori px-3 pb-1 text-rice shadow-[4px_4px_0_0_var(--color-mango)]">
+              {t.hero.accent}
+            </span>
           </h1>
-          <p className="mt-6 max-w-md text-lg font-medium text-white/95">{t.hero.lead}</p>
+          <p className="mt-6 max-w-md text-lg font-medium text-nori">{t.hero.lead}</p>
           <div className="mt-8 flex flex-wrap gap-4">
             <a
               href="#armar"
-              className="rounded-2xl border-2 border-nori bg-nori px-6 py-3 font-display text-rice shadow-[4px_4px_0_0_var(--color-mango)] transition-transform hover:-translate-y-0.5 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-mango"
+              className="rounded-2xl border-2 border-nori bg-nori px-6 py-3 font-display text-rice shadow-[4px_4px_0_0_var(--color-mango)] transition-transform hover:-translate-y-0.5 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-nori"
             >
               {t.hero.ctaBuild}
             </a>
             <a
               href="#como-funciona"
-              className="rounded-2xl border-2 border-white px-6 py-3 font-bold text-white transition-colors hover:bg-white/10"
+              className="rounded-2xl border-2 border-nori px-6 py-3 font-bold text-nori transition-colors hover:bg-white/25 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-nori"
             >
               {t.hero.ctaHow}
             </a>

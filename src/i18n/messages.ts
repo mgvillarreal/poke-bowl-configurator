@@ -97,7 +97,7 @@ const es: Messages = {
   htmlLang: 'es',
   meta: { title: 'Nami Poke Bar · Arma tu bowl' },
   header: {
-    home: 'Nami Poke Bar, inicio',
+    home: 'Poke Bar, inicio',
     nav: 'Principal',
     build: 'Arma tu bowl',
     how: 'Cómo funciona',
@@ -267,7 +267,7 @@ const en: Messages = {
   htmlLang: 'en',
   meta: { title: 'Nami Poke Bar · Build your bowl' },
   header: {
-    home: 'Nami Poke Bar, home',
+    home: 'Poke Bar, home',
     nav: 'Main',
     build: 'Build your bowl',
     how: 'How it works',

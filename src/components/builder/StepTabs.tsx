@@ -25,7 +25,7 @@ export function StepTabs() {
             aria-selected={isActive}
             aria-controls={`panel-${c.id}`}
             onClick={() => setStep(c.id)}
-            className="relative shrink-0 rounded-full px-4 py-2 text-sm font-bold whitespace-nowrap focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-coral"
+            className="relative shrink-0 rounded-full px-4 py-2 text-sm font-bold whitespace-nowrap focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-nori"
           >
             {isActive && (
               <motion.span
@@ -34,13 +34,13 @@ export function StepTabs() {
                 transition={{ type: 'spring', stiffness: 400, damping: 32 }}
               />
             )}
-            <span className={`relative flex items-center gap-2 ${isActive ? 'text-white' : 'text-nori/70'}`}>
+            <span className={`relative flex items-center gap-2 ${isActive ? 'text-nori' : 'text-nori/70'}`}>
               <span>
                 {c.step}. {t.categories[c.id].label}
               </span>
               <span
                 className={`rounded-full px-1.5 text-xs tabular-nums ${
-                  isActive ? 'bg-white/25' : count > 0 ? 'bg-matcha/40 text-nori' : 'bg-nori/10'
+                  isActive ? 'bg-white/40' : count > 0 ? 'bg-matcha/40 text-nori' : 'bg-nori/10'
                 }`}
               >
                 {count}/{limit}

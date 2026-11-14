@@ -4,18 +4,37 @@
 @theme {
   --color-coral: #ff6b5a;
   --color-coral-dark: #e8503f;
+  /* Coral para TEXTO sobre fondos claros: cumple contraste 4.5:1 */
+  --color-coral-ink: #c2372a;
   --color-sakura: #ffe1db;
   --color-mango: #ffc93c;
   --color-matcha: #7bc67e;
   --color-nori: #1f2a5a;
   --color-rice: #fff6e9;
 
-  --font-display: 'Dela Gothic One', 'Zen Maru Gothic', system-ui, sans-serif;
-  --font-sans: 'Zen Maru Gothic', system-ui, sans-serif;
+  --font-display: 'Dela Gothic One', 'Dela Fallback', system-ui, sans-serif;
+  --font-sans: 'Zen Maru Gothic', 'Zen Maru Fallback', system-ui, sans-serif;
 
   /* Sombra "sticker": bloque sólido desplazado, sin difuminar */
   --shadow-sticker: 4px 4px 0 0 var(--color-nori);
   --shadow-sticker-lg: 6px 6px 0 0 var(--color-nori);
+}
+
+/*
+ * Fuentes de respaldo con el mismo ancho que las de la marca (medido en el navegador):
+ * mientras cargan las fuentes de Google, el texto ocupa las mismas líneas y nada "salta" (CLS).
+ */
+@font-face {
+  font-family: 'Zen Maru Fallback';
+  src: local('Arial');
+  size-adjust: 98.5%;
+}
+
+@font-face {
+  font-family: 'Dela Fallback';
+  src: local('Arial Black'), local('Arial Bold');
+  font-weight: 400;
+  size-adjust: 104%;
 }
 
 html {

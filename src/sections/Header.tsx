@@ -24,16 +24,16 @@ export function Header() {
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
         <Logo label={t.header.home} />
         <nav aria-label={t.header.nav} className="hidden items-center gap-8 font-bold md:flex">
-          <a href="#armar" className="hover:text-coral">
+          <a href="#armar" className="hover:text-coral-ink">
             {t.header.build}
           </a>
-          <a href="#como-funciona" className="hover:text-coral">
+          <a href="#como-funciona" className="hover:text-coral-ink">
             {t.header.how}
           </a>
         </nav>
         <a
           href="#armar"
-          className="rounded-xl border-2 border-nori bg-coral px-4 py-2 text-sm font-bold text-white shadow-sticker transition-transform hover:-translate-y-0.5 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-mango"
+          className="rounded-xl border-2 border-nori bg-coral px-4 py-2 text-sm font-bold text-nori shadow-sticker transition-transform hover:-translate-y-0.5 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-nori"
         >
           {t.header.order}
         </a>

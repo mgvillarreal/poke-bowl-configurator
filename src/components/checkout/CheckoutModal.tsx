@@ -185,12 +185,12 @@ function CheckoutDialog() {
               <li key={label} className="flex items-center gap-2" aria-current={i === stepIndex ? 'step' : undefined}>
                 <span
                   className={`flex h-6 w-6 items-center justify-center rounded-full border-2 border-nori transition-colors ${
-                    i < stepIndex ? 'bg-matcha' : i === stepIndex ? 'bg-coral text-white' : 'bg-white text-nori/50'
+                    i < stepIndex ? 'bg-matcha' : i === stepIndex ? 'bg-coral text-nori' : 'bg-white text-nori/75'
                   }`}
                 >
                   {i < stepIndex ? '✓' : i + 1}
                 </span>
-                <span className={`hidden sm:inline ${i === stepIndex ? '' : 'text-nori/50'}`}>{label}</span>
+                <span className={`hidden sm:inline ${i === stepIndex ? '' : 'text-nori/75'}`}>{label}</span>
                 {i < c.steps.length - 1 && <span aria-hidden className="h-0.5 w-4 bg-nori/20" />}
               </li>
             ))}
@@ -200,7 +200,7 @@ function CheckoutDialog() {
             onClick={requestClose}
             disabled={!canClose}
             aria-label={c.close}
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-nori bg-white transition-transform hover:rotate-90 disabled:opacity-40 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-coral"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-nori bg-white transition-transform hover:rotate-90 disabled:opacity-40 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-nori"
           >
             <svg viewBox="0 0 16 16" className="h-4 w-4" aria-hidden>
               <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" />
@@ -228,7 +228,7 @@ function CheckoutDialog() {
                     <Bowl config={config} />
                   </div>
                   <div className="min-w-0">
-                    <p className="text-xs font-bold tracking-widest text-coral uppercase">{c.bowlLine(t.sizes[size].label)}</p>
+                    <p className="text-xs font-bold tracking-widest text-coral-ink uppercase">{c.bowlLine(t.sizes[size].label)}</p>
                     <p className="font-display text-lg leading-tight">{bowlName(config, t)}</p>
                     <dl className="mt-2 space-y-0.5 text-xs text-nori/75">
                       {CATEGORIES.filter((cat) => selection[cat.id].length > 0).map((cat) => (
@@ -450,8 +450,8 @@ function CheckoutDialog() {
                 <p className="mt-2 text-nori/80">{c.eta(form.mode, slot)}</p>
 
                 <div className="mt-5 w-full rounded-3xl border-2 border-dashed border-nori/40 bg-white p-4">
-                  <p className="text-xs font-bold tracking-widest text-nori/60 uppercase">{c.orderNumber}</p>
-                  <p className="font-display text-2xl tracking-wider text-coral">{orderNumber}</p>
+                  <p className="text-xs font-bold tracking-widest text-nori/75 uppercase">{c.orderNumber}</p>
+                  <p className="font-display text-2xl tracking-wider text-coral-ink">{orderNumber}</p>
                   <p className="mt-1 text-sm">
                     {quantity} × {bowlName(config, t)} · <strong>{money(total)}</strong>
                   </p>
@@ -463,7 +463,7 @@ function CheckoutDialog() {
                   <button
                     type="button"
                     onClick={close}
-                    className="flex-1 rounded-2xl border-2 border-nori bg-white px-5 py-3 font-bold focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-coral"
+                    className="flex-1 rounded-2xl border-2 border-nori bg-white px-5 py-3 font-bold focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-nori"
                   >
                     {c.done}
                   </button>
@@ -483,7 +483,7 @@ function CheckoutDialog() {
 /* ---------- Piezas pequeñas del formulario ---------- */
 
 const INPUT =
-  'w-full rounded-xl border-2 border-nori/20 bg-white px-3 py-2 text-nori placeholder:text-nori/40 focus:border-coral focus:outline-none aria-[invalid=true]:border-coral-dark'
+  'w-full rounded-xl border-2 border-nori/50 bg-white px-3 py-2 text-nori placeholder:text-nori/40 focus:border-nori focus:outline-none aria-[invalid=true]:border-coral-ink'
 
 function TextField(props: {
   id: string
@@ -507,14 +507,14 @@ function TextField(props: {
           {label}
           {required && (
             <>
-              <span aria-hidden className="ml-0.5 text-coral">
+              <span aria-hidden className="ml-0.5 text-coral-ink">
                 *
               </span>
               <span className="sr-only"> ({requiredLabel})</span>
             </>
           )}
         </span>
-        {hint && <span className="text-xs font-medium text-nori/50">{hint}</span>}
+        {hint && <span className="text-xs font-medium text-nori/75">{hint}</span>}
       </label>
       <input
         id={id}
@@ -529,7 +529,7 @@ function TextField(props: {
         className={`${INPUT} mt-1`}
       />
       {error && (
-        <p id={`${id}-error`} className="mt-1 text-sm font-bold text-coral-dark">
+        <p id={`${id}-error`} className="mt-1 text-sm font-bold text-coral-ink">
           {error}
         </p>
       )}
@@ -548,13 +548,13 @@ function ChoiceCard(props: {
   const { name, checked, onChange, label, detail, compact } = props
   return (
     <label
-      className={`flex cursor-pointer flex-col rounded-2xl border-2 transition-colors has-checked:border-nori has-checked:bg-sakura has-focus-visible:outline-3 has-focus-visible:outline-offset-2 has-focus-visible:outline-coral ${
+      className={`flex cursor-pointer flex-col rounded-2xl border-2 transition-colors has-checked:border-nori has-checked:bg-sakura has-focus-visible:outline-3 has-focus-visible:outline-offset-2 has-focus-visible:outline-nori ${
         compact ? 'px-3 py-2' : 'px-4 py-3'
-      } border-nori/15 bg-white hover:border-nori/40`}
+      } border-nori/40 bg-white hover:border-nori`}
     >
       <input type="radio" name={name} checked={checked} onChange={onChange} className="sr-only" />
       <span className="font-bold">{label}</span>
-      {detail && <span className="text-xs text-nori/60">{detail}</span>}
+      {detail && <span className="text-xs text-nori/75">{detail}</span>}
     </label>
   )
 }
@@ -566,7 +566,7 @@ function StepperButton(props: { label: string; disabled: boolean; onClick: () =>
       aria-label={props.label}
       disabled={props.disabled}
       onClick={props.onClick}
-      className="flex h-8 w-8 items-center justify-center rounded-full bg-sakura font-display text-lg transition-colors hover:bg-coral hover:text-white disabled:opacity-30 disabled:hover:bg-sakura disabled:hover:text-nori focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-coral"
+      className="flex h-8 w-8 items-center justify-center rounded-full bg-sakura font-display text-lg transition-colors hover:bg-coral hover:text-nori disabled:opacity-30 disabled:hover:bg-sakura disabled:hover:text-nori focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-nori"
     >
       {props.children}
     </button>
@@ -579,7 +579,7 @@ function Breakdown({ children }: { children: ReactNode }) {
 
 function Line({ label, value, muted, strong }: { label: string; value: string; muted?: boolean; strong?: boolean }) {
   return (
-    <div className={`flex justify-between gap-4 ${muted ? 'text-sm text-nori/60' : ''} ${strong ? 'font-display text-lg' : ''}`}>
+    <div className={`flex justify-between gap-4 ${muted ? 'text-sm text-nori/75' : ''} ${strong ? 'font-display text-lg' : ''}`}>
       <dt>{label}</dt>
       <dd className="tabular-nums">{value}</dd>
     </div>
@@ -593,7 +593,7 @@ function PrimaryButton({ onClick, children, inline }: { onClick: () => void; chi
       onClick={onClick}
       whileHover={{ y: -2 }}
       whileTap={{ y: 1, scale: 0.98 }}
-      className={`rounded-2xl border-2 border-nori bg-coral px-5 py-3 font-display text-white shadow-sticker transition-colors hover:bg-coral-dark focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-mango ${
+      className={`rounded-2xl border-2 border-nori bg-coral px-5 py-3 font-display text-nori shadow-sticker transition-colors hover:bg-coral-dark focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-nori ${
         inline ? 'flex-1 sm:flex-none' : 'mt-6 w-full'
       }`}
     >

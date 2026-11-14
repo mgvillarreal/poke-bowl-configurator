@@ -30,8 +30,8 @@ export function SummaryBar() {
   return (
     <div className="flex items-center justify-between gap-4 rounded-3xl border-2 border-nori bg-white p-4 shadow-sticker-lg">
       <div>
-        <p className="text-xs font-bold tracking-widest text-nori/60 uppercase">{t.summary.total}</p>
-        <p className="font-display text-3xl leading-none">
+        <p className="text-xs font-bold tracking-widest text-nori/75 uppercase">{t.summary.total}</p>
+        <p data-testid="bowl-total" className="font-display text-3xl leading-none">
           <AnimatedNumber value={totals.price} format={(v) => formatMoney(v, t.intl)} />
         </p>
         <p className="mt-1 text-xs text-nori/70">
@@ -44,7 +44,7 @@ export function SummaryBar() {
         whileHover={{ y: -2 }}
         whileTap={{ y: 1, scale: 0.97 }}
         onClick={handleAdd}
-        className="rounded-2xl border-2 border-nori bg-coral px-5 py-3 font-display text-white shadow-sticker transition-colors hover:bg-coral-dark focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-mango"
+        className="rounded-2xl border-2 border-nori bg-coral px-5 py-3 font-display text-nori shadow-sticker transition-colors hover:bg-coral-dark focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-nori"
       >
         {t.summary.add}
       </motion.button>

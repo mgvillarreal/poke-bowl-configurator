@@ -35,7 +35,7 @@ export function Builder() {
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p className="font-bold tracking-widest text-coral uppercase">{t.builder.eyebrow}</p>
+            <p className="font-bold tracking-widest text-coral-ink uppercase">{t.builder.eyebrow}</p>
             <h2 className="font-display text-4xl sm:text-5xl">{t.builder.title}</h2>
           </div>
 
@@ -53,7 +53,7 @@ export function Builder() {
                   exit={{ opacity: 0, scale: 0.8 }}
                   whileHover={{ y: -2 }}
                   whileTap={{ scale: 0.95 }}
-                  className="flex items-center gap-2 rounded-2xl border-2 border-nori bg-white px-4 py-2 font-bold shadow-sticker focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-coral"
+                  className="flex items-center gap-2 rounded-2xl border-2 border-nori bg-white px-4 py-2 font-bold shadow-sticker focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-nori"
                 >
                   <svg viewBox="0 0 20 20" className="h-4 w-4" aria-hidden>
                     <path
@@ -75,7 +75,7 @@ export function Builder() {
               onClick={surprise}
               whileHover={{ rotate: -2, y: -2 }}
               whileTap={{ scale: 0.95 }}
-              className="rounded-2xl border-2 border-nori bg-mango px-4 py-2 font-bold shadow-sticker focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-coral"
+              className="rounded-2xl border-2 border-nori bg-mango px-4 py-2 font-bold shadow-sticker focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-nori"
             >
               {t.builder.surprise}
             </motion.button>
@@ -121,7 +121,7 @@ export function Builder() {
             <div role="tabpanel" id={`panel-${step}`} aria-labelledby={`tab-${step}`}>
               <div className="mb-4 flex items-baseline justify-between gap-2">
                 <h3 className="font-display text-2xl">{category.title}</h3>
-                <p className="text-sm text-nori/60">
+                <p className="text-sm text-nori/75">
                   {limit === 1 ? t.builder.chooseOne : t.builder.upTo(limit)} · {t.builder.chosen(chosen.length)}
                 </p>
               </div>
@@ -156,7 +156,7 @@ export function Builder() {
                   <span />
                 )}
                 {next && (
-                  <button type="button" onClick={() => setStep(next.id)} className="font-bold text-coral hover:text-coral-dark">
+                  <button type="button" onClick={() => setStep(next.id)} className="font-bold text-coral-ink hover:text-nori">
                     {t.builder.next(t.categories[next.id].label)}
                   </button>
                 )}

@@ -8,7 +8,8 @@ export function Logo({ label, light = false }: LogoProps) {
   const color = light ? 'text-rice' : 'text-nori'
 
   return (
-    <a href="#inicio" className={`flex shrink-0 items-center gap-2 ${color}`} aria-label={label}>
+    // Sin aria-label: el nombre accesible es el texto visible ("NAMI") + el texto solo para lectores
+    <a href="#inicio" className={`flex shrink-0 items-center gap-2 ${color}`}>
       <svg viewBox="0 0 40 40" className="h-9 w-9" aria-hidden>
         <circle cx={20} cy={20} r={19} fill="#ff6b5a" stroke="currentColor" strokeWidth={2} />
         <path
@@ -21,7 +22,10 @@ export function Logo({ label, light = false }: LogoProps) {
         <path d="M7 29h26" stroke="#fff6e9" strokeWidth={2.6} strokeLinecap="round" />
       </svg>
       <span className="font-display text-2xl leading-none tracking-wide">NAMI</span>
-      <span className="hidden font-display text-sm text-coral min-[400px]:inline">ナミ</span>
+      <span aria-hidden className={`hidden font-display text-sm min-[400px]:inline ${light ? 'text-coral' : 'text-coral-ink'}`}>
+        ナミ
+      </span>
+      <span className="sr-only">{label}</span>
     </a>
   )
 }

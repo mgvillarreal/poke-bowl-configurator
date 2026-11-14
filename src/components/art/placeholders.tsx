@@ -27,7 +27,7 @@ export function BasePlaceholder({ ingredient }: { ingredient: Ingredient }) {
   const uid = useId()
   const rand = seeded(hashString(ingredient.id))
   const colors = colorsOf(ingredient)
-  const pieces = Array.from({ length: ingredient.shape === 'leaf' ? 46 : 280 }, () => {
+  const pieces = Array.from({ length: ingredient.shape === 'leaf' ? 40 : 170 }, () => {
     const [x, y] = inOval(rand, 46, 46)
     return { x, y, rot: rand() * 180, color: colors[Math.floor(rand() * colors.length)] }
   })
@@ -141,8 +141,8 @@ export function DrizzlePlaceholder({ ingredient }: { ingredient: Ingredient }) {
 }
 
 const SCATTER_COUNT: Partial<Record<Ingredient['shape'], number>> = {
-  seed: 110,
-  dot: 120,
+  seed: 80,
+  dot: 80,
   ring: 34,
   strip: 26,
   flake: 50,
@@ -182,7 +182,7 @@ export function ScatterPlaceholder({ ingredient }: { ingredient: Ingredient }) {
 export function BowlPlaceholder() {
   const uid = useId()
   const rand = seeded(2026)
-  const specks = Array.from({ length: 70 }, () => inOval(rand, 46, 46))
+  const specks = Array.from({ length: 40 }, () => inOval(rand, 46, 46))
 
   return (
     <Svg>

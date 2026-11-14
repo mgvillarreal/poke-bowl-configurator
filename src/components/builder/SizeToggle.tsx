@@ -20,7 +20,7 @@ export function SizeToggle() {
             role="radio"
             aria-checked={active}
             onClick={() => setSize(s.id)}
-            className="relative rounded-xl px-3 py-2 text-left transition-colors focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-coral"
+            className="relative rounded-xl px-3 py-2 text-left transition-colors focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-nori"
           >
             {active && (
               <motion.span
@@ -34,7 +34,7 @@ export function SizeToggle() {
                 <span className="font-display text-lg">{t.sizes[s.id].label}</span>
                 <span className="font-bold">{formatMoney(s.price, t.intl)}</span>
               </span>
-              <span className={`text-xs ${active ? 'text-rice/75' : 'text-nori/60'}`}>{t.sizes[s.id].description}</span>
+              <span className={`text-xs ${active ? 'text-rice/75' : 'text-nori/75'}`}>{t.sizes[s.id].description}</span>
             </span>
           </button>
         )
