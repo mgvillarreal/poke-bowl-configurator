@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test'
 
 /**
  * Armador de bowls. Bowl por defecto: Regular ($169) + arroz de sushi + salmón (+$30)
- * + aguacate (+$15), mango, edamame, cebolla + spicy mayo + ajonjolí y cebollín = $214.
+ * + palta (+$15), mango, vainas de soja, cebolla + spicy mayo + sésamo y cebollín = $214.
  */
 test.beforeEach(async ({ page }) => {
   await page.goto('/')
@@ -78,12 +78,12 @@ test('"Vaciar bowl" deja el bowl vacío y solo aparece si hay ingredientes', asy
 
 test('"Agregar al pedido" lleva al paso que falta', async ({ page }) => {
   await page.getByRole('button', { name: 'Vaciar bowl' }).click()
-  await page.getByRole('button', { name: 'Agregar al pedido' }).click()
+  await page.getByRole('button', { name: 'Agregar al pedido', exact: true }).click()
   await expect(page.getByText('Primero elige una base para tu bowl.')).toBeVisible()
   await expect(page.getByRole('tab', { name: /Base/ })).toHaveAttribute('aria-selected', 'true')
 
   await card(page, /Arroz integral/).click()
-  await page.getByRole('button', { name: 'Agregar al pedido' }).click()
+  await page.getByRole('button', { name: 'Agregar al pedido', exact: true }).click()
   await expect(page.getByText('Elige al menos una proteína (o tofu) para tu bowl.')).toBeVisible()
   await expect(page.getByRole('tab', { name: /Proteína/ })).toHaveAttribute('aria-selected', 'true')
   await expect(page.getByRole('dialog')).toBeHidden()

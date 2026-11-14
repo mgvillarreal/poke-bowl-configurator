@@ -1,9 +1,9 @@
 import { expect, test, type Page } from '@playwright/test'
 
-/** Abre el checkout con el bowl por defecto ($214) */
+/** Agrega el bowl por defecto ($214) al pedido, lo que abre el checkout */
 async function openCheckout(page: Page) {
   await page.goto('/')
-  await page.getByRole('button', { name: 'Agregar al pedido' }).click()
+  await page.getByRole('button', { name: 'Agregar al pedido', exact: true }).click()
   const dialog = page.getByRole('dialog')
   await expect(dialog).toBeVisible()
   return dialog
@@ -11,11 +11,11 @@ async function openCheckout(page: Page) {
 
 test('pedido completo para recoger en tienda', async ({ page }) => {
   const dialog = await openCheckout(page)
-  await expect(dialog.getByRole('heading', { name: 'Revisa tu bowl' })).toBeVisible()
+  await expect(dialog.getByRole('heading', { name: 'Tu pedido' })).toBeVisible()
 
-  await dialog.getByRole('button', { name: 'Agregar uno' }).click()
+  await dialog.getByRole('button', { name: 'Agregar uno: Bowl 1' }).click()
   await expect(dialog.getByText('Subtotal')).toBeVisible()
-  await expect(dialog.locator('dl').getByText('$428')).toBeVisible()
+  await expect(dialog.getByRole('definition').filter({ hasText: '$428' }).last()).toBeVisible()
 
   await dialog.getByRole('button', { name: 'Continuar' }).click()
   await dialog.getByLabel(/Nombre/).fill('Gaby')
@@ -96,7 +96,7 @@ test('teclado: el foco queda dentro del modal y Esc lo cierra', async ({ page })
 
   await page.keyboard.press('Escape')
   await expect(dialog).toBeHidden()
-  await expect(page.getByRole('button', { name: 'Agregar al pedido' })).toBeFocused()
+  await expect(page.getByRole('button', { name: 'Agregar al pedido', exact: true })).toBeFocused()
   await expect(page.locator('[inert]')).toHaveCount(0)
 })
 

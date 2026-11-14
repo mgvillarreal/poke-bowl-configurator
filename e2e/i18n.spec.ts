@@ -19,7 +19,7 @@ test('cambia todo a inglés con la bandera de Estados Unidos', async ({ page }) 
   await expect(page).toHaveTitle('Nami Poke Bar · Build your bowl')
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Ride')
   await expect(page.getByRole('heading', { name: 'Build your bowl' })).toBeVisible()
-  await expect(page.getByRole('button', { name: 'Add to order' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Add to order', exact: true })).toBeVisible()
   await expect(page.locator('#armar').getByText('Salmon · Spicy mayo')).toBeVisible()
 })
 

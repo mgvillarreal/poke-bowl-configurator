@@ -28,6 +28,9 @@ export type Shape =
 
 export type Tag = 'popular' | 'spicy' | 'new'
 
+/** Lo que contiene un ingrediente; de aquí se derivan "vegano", "sin gluten" y "del mar" */
+export type Contains = 'fish' | 'shellfish' | 'meat' | 'egg' | 'gluten'
+
 export interface Category {
   id: CategoryId
   step: number
@@ -39,7 +42,7 @@ export interface Ingredient {
   id: string
   category: CategoryId
   color: string
-  /** Colores extra para placeholders con varios tonos (quinoa, hojas, ajonjolí) */
+  /** Colores extra para placeholders con varios tonos (quinoa, hojas, sésamo) */
   palette?: string[]
   shape: Shape
   /** Costo extra sobre el precio del tamaño */
@@ -48,6 +51,7 @@ export interface Ingredient {
   /** Gramos de proteína */
   protein: number
   tag?: Tag
+  contains?: Contains[]
 }
 
 export interface Size {
@@ -87,10 +91,10 @@ export const INGREDIENTS: Ingredient[] = [
   { id: 'greens', category: 'base', color: '#6fae4f', palette: ['#6fae4f', '#4f8f3a', '#9ccc65', '#3e7b34'], shape: 'leaf', price: 0, kcal: 20, protein: 2 },
 
   // Proteínas
-  { id: 'tuna', category: 'protein', color: '#c4243b', shape: 'cube', price: 0, kcal: 130, protein: 28, tag: 'popular' },
-  { id: 'salmon', category: 'protein', color: '#ff8a5c', shape: 'cube', price: 30, kcal: 180, protein: 25 },
-  { id: 'shrimp', category: 'protein', color: '#ffb0a0', shape: 'bean', price: 20, kcal: 100, protein: 22 },
-  { id: 'chicken-teriyaki', category: 'protein', color: '#b8742f', shape: 'cube', price: 0, kcal: 190, protein: 30 },
+  { id: 'tuna', category: 'protein', color: '#c4243b', shape: 'cube', price: 0, kcal: 130, protein: 28, tag: 'popular', contains: ['fish', 'gluten'] },
+  { id: 'salmon', category: 'protein', color: '#ff8a5c', shape: 'cube', price: 30, kcal: 180, protein: 25, contains: ['fish'] },
+  { id: 'shrimp', category: 'protein', color: '#ffb0a0', shape: 'bean', price: 20, kcal: 100, protein: 22, contains: ['shellfish'] },
+  { id: 'chicken-teriyaki', category: 'protein', color: '#b8742f', shape: 'cube', price: 0, kcal: 190, protein: 30, contains: ['meat', 'gluten'] },
   { id: 'tofu', category: 'protein', color: '#e8b75a', shape: 'cube', price: 0, kcal: 140, protein: 15 },
 
   // Complementos
@@ -101,20 +105,20 @@ export const INGREDIENTS: Ingredient[] = [
   { id: 'corn', category: 'extra', color: '#ffd84a', shape: 'kernel', price: 0, kcal: 45, protein: 1 },
   { id: 'red-onion', category: 'extra', color: '#c2357a', shape: 'strip', price: 0, kcal: 10, protein: 0 },
   { id: 'carrot', category: 'extra', color: '#ff8c2b', shape: 'strip', price: 0, kcal: 15, protein: 0 },
-  { id: 'wakame', category: 'extra', color: '#3f9b3a', shape: 'strip', price: 0, kcal: 35, protein: 1 },
+  { id: 'wakame', category: 'extra', color: '#3f9b3a', shape: 'strip', price: 0, kcal: 35, protein: 1, contains: ['gluten'] },
 
   // Salsas
-  { id: 'ponzu', category: 'sauce', color: '#c98a2c', shape: 'drizzle', price: 0, kcal: 15, protein: 0 },
-  { id: 'spicy-mayo', category: 'sauce', color: '#ff7f50', shape: 'drizzle', price: 0, kcal: 90, protein: 0, tag: 'spicy' },
-  { id: 'teriyaki', category: 'sauce', color: '#5a2e12', shape: 'drizzle', price: 0, kcal: 35, protein: 0 },
+  { id: 'ponzu', category: 'sauce', color: '#c98a2c', shape: 'drizzle', price: 0, kcal: 15, protein: 0, contains: ['fish', 'gluten'] },
+  { id: 'spicy-mayo', category: 'sauce', color: '#ff7f50', shape: 'drizzle', price: 0, kcal: 90, protein: 0, tag: 'spicy', contains: ['egg'] },
+  { id: 'teriyaki', category: 'sauce', color: '#5a2e12', shape: 'drizzle', price: 0, kcal: 35, protein: 0, contains: ['gluten'] },
   { id: 'sesame', category: 'sauce', color: '#e9cf9e', shape: 'drizzle', price: 0, kcal: 70, protein: 1 },
 
   // Toppings
   { id: 'sesame-seeds', category: 'topping', color: '#f3ead6', palette: ['#f3ead6', '#2b2622'], shape: 'seed', price: 0, kcal: 25, protein: 1 },
   { id: 'scallions', category: 'topping', color: '#5cb85c', shape: 'ring', price: 0, kcal: 2, protein: 0 },
   { id: 'nori', category: 'topping', color: '#1f3b2a', shape: 'strip', price: 0, kcal: 5, protein: 1 },
-  { id: 'crispy-onion', category: 'topping', color: '#d99a3a', shape: 'flake', price: 0, kcal: 40, protein: 0 },
-  { id: 'masago', category: 'topping', color: '#ff7a1a', shape: 'dot', price: 20, kcal: 20, protein: 3 },
+  { id: 'crispy-onion', category: 'topping', color: '#d99a3a', shape: 'flake', price: 0, kcal: 40, protein: 0, contains: ['gluten'] },
+  { id: 'masago', category: 'topping', color: '#ff7a1a', shape: 'dot', price: 20, kcal: 20, protein: 3, contains: ['fish'] },
 ]
 
 export const EMPTY_SELECTION: Selection = { base: [], protein: [], extra: [], sauce: [], topping: [] }
@@ -129,6 +133,73 @@ export const DEFAULT_BOWL: BowlConfig = {
     topping: ['sesame-seeds', 'scallions'],
   },
 }
+
+/** Bowls de la casa: combinaciones listas que se cargan en el armador o van directo al pedido */
+export interface HouseBowl {
+  id: string
+  /** Nombre propio: igual en todos los idiomas */
+  name: string
+  config: BowlConfig
+}
+
+export const HOUSE_BOWLS: HouseBowl[] = [
+  {
+    id: 'hawaiian-classic',
+    name: 'Hawaiian Classic',
+    config: {
+      size: 'regular',
+      selection: {
+        base: ['rice-white'],
+        protein: ['salmon'],
+        extra: ['avocado', 'mango', 'cucumber', 'edamame'],
+        sauce: ['ponzu'],
+        topping: ['sesame-seeds', 'scallions'],
+      },
+    },
+  },
+  {
+    id: 'spicy-tuna',
+    name: 'Spicy Tuna',
+    config: {
+      size: 'regular',
+      selection: {
+        base: ['rice-white'],
+        protein: ['tuna'],
+        extra: ['avocado', 'cucumber', 'carrot', 'red-onion'],
+        sauce: ['spicy-mayo'],
+        topping: ['crispy-onion', 'masago', 'scallions'],
+      },
+    },
+  },
+  {
+    id: 'green-vegan',
+    name: 'Green Vegan',
+    config: {
+      size: 'regular',
+      selection: {
+        base: ['greens'],
+        protein: ['tofu'],
+        extra: ['avocado', 'edamame', 'cucumber', 'corn'],
+        sauce: ['sesame'],
+        topping: ['sesame-seeds', 'scallions', 'nori'],
+      },
+    },
+  },
+  {
+    id: 'teriyaki-crunch',
+    name: 'Teriyaki Crunch',
+    config: {
+      size: 'grande',
+      selection: {
+        base: ['rice-brown'],
+        protein: ['chicken-teriyaki', 'shrimp'],
+        extra: ['edamame', 'corn', 'carrot', 'mango', 'red-onion', 'cucumber'],
+        sauce: ['teriyaki'],
+        topping: ['crispy-onion', 'sesame-seeds'],
+      },
+    },
+  },
+]
 
 const byId = <T extends { id: string }>(list: T[]) =>
   Object.fromEntries(list.map((item) => [item.id, item])) as Record<T['id'], T>

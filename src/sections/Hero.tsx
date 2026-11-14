@@ -34,7 +34,8 @@ export function Hero() {
       style={{ backgroundImage: seigaiha('rgba(255,255,255,0.16)', '#ff6b5a'), backgroundSize: '60px 30px' }}
     >
       <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 py-16 sm:px-6 md:grid-cols-2 md:py-24">
-        <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+        {/* Sin fundido de opacidad: el texto principal se pinta de inmediato (mejor LCP); solo se desliza */}
+        <motion.div initial={{ y: 16 }} animate={{ y: 0 }} transition={{ duration: 0.6, ease: 'easeOut' }}>
           <span className="inline-block -rotate-2 rounded-full border-2 border-nori bg-rice px-3 py-1 text-sm font-bold shadow-sticker">
             {t.hero.badge}
           </span>

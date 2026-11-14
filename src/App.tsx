@@ -8,6 +8,7 @@ import { useBowlStore } from './store/bowlStore'
 import { Footer } from './sections/Footer'
 import { Header, TopBar } from './sections/Header'
 import { Hero } from './sections/Hero'
+import { HouseBowls } from './sections/HouseBowls'
 import { HowItWorks } from './sections/HowItWorks'
 
 export default function App() {
@@ -29,6 +30,7 @@ export default function App() {
         <Header />
         <main>
           <Hero />
+          <HouseBowls />
           <Builder />
           <HowItWorks />
         </main>

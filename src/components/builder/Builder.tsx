@@ -2,9 +2,12 @@ import { AnimatePresence, motion } from 'motion/react'
 import { CATEGORIES, SIZE_BY_ID, ingredientsOf } from '../../data/menu'
 import { useT } from '../../i18n/useLocale'
 import { bowlName } from '../../lib/bowl'
+import { failedFilters } from '../../lib/diet'
 import { seigaiha } from '../../lib/svg'
 import { countSelected, useBowlStore } from '../../store/bowlStore'
 import { Bowl } from '../bowl/Bowl'
+import { RenderWhenVisible } from '../ui/RenderWhenVisible'
+import { DietFilters } from './DietFilters'
 import { IngredientCard } from './IngredientCard'
 import { SizeToggle } from './SizeToggle'
 import { StepTabs } from './StepTabs'
@@ -19,6 +22,7 @@ export function Builder() {
   const toggle = useBowlStore((s) => s.toggle)
   const surprise = useBowlStore((s) => s.surprise)
   const clear = useBowlStore((s) => s.clear)
+  const filters = useBowlStore((s) => s.filters)
 
   const config = { size, selection }
   const hasItems = countSelected(selection) > 0
@@ -92,7 +96,9 @@ export function Builder() {
               <span aria-hidden className="pointer-events-none absolute -top-4 -right-2 font-display text-8xl text-white/5 select-none">
                 ナミ
               </span>
-              <Bowl config={config} emptyHint={t.builder.emptyHint} className="mx-auto max-w-[480px]" />
+              <RenderWhenVisible className="mx-auto aspect-square max-w-[480px]">
+                <Bowl config={config} emptyHint={t.builder.emptyHint} />
+              </RenderWhenVisible>
               <div className="mt-6 text-center">
                 <p className="text-xs font-bold tracking-widest text-mango uppercase">
                   {t.builder.yourBowl(t.sizes[size].label)}
@@ -116,6 +122,7 @@ export function Builder() {
           {/* Panel de opciones */}
           <div className="flex min-w-0 flex-col gap-6">
             <SizeToggle />
+            <DietFilters />
             <StepTabs />
 
             <div role="tabpanel" id={`panel-${step}`} aria-labelledby={`tab-${step}`}>
@@ -141,6 +148,7 @@ export function Builder() {
                       ingredient={ingredient}
                       selected={chosen.includes(ingredient.id)}
                       dimmed={limit > 1 && chosen.length >= limit}
+                      blockedBy={failedFilters(ingredient, filters)}
                       onToggle={() => toggle(ingredient.id)}
                     />
                   ))}

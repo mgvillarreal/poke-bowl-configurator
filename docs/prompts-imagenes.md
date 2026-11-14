@@ -139,7 +139,7 @@ Editorial food photography for a vibrant modern Asian poke restaurant brand. Bri
 - [X] proteínas (5)
 - [X] complementos (8)
 - [X] salsas (4)
-- [2] toppings (5)
-- [ ] escenas (3)
+- [X] toppings (5)
+- [2] escenas (3)
 
 **Para empezar rápido:** con el bowl, 1 base, 2 proteínas, 3 complementos y 1 salsa ya puedo armar y animar el configurador mientras generas el resto.

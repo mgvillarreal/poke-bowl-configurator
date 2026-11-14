@@ -4,15 +4,19 @@
 ![Lighthouse accessibility 100](https://img.shields.io/badge/Lighthouse_accessibility-100-1f2a5a)
 ![axe-core: 0 WCAG 2.1 AA violations](https://img.shields.io/badge/axe--core-0_WCAG_2.1_AA_violations-1f2a5a)
 
-A landing page with a **real-time visual poke bowl builder**. Pick a base, protein, mix-ins, sauce and toppings, and watch your bowl come together, with fluid animations and a simulated checkout.
+A landing page with a **real-time visual poke bowl builder**. Start from a house bowl or from scratch, filter by diet, pick a base, protein, mix-ins, sauce and toppings, and watch your bowl come together. Then order several bowls, one for each person, through a simulated checkout.
 
 > **Nami Poke Bar is a fictional brand** created as a portfolio concept project. Menu, prices and orders are for demo purposes only. No real order or payment is ever made.
 
 ![Hero section](docs/screenshots/hero.jpg)
 
-| Builder | Checkout | Mobile |
-|---|---|---|
-| ![Bowl builder](docs/screenshots/builder.jpg) | ![Checkout modal](docs/screenshots/checkout.jpg) | ![Mobile view](docs/screenshots/mobile-builder.jpg) |
+| House bowls | Builder with dietary preferences |
+|---|---|
+| ![House bowls](docs/screenshots/house-bowls.jpg) | ![Bowl builder with the vegan filter on](docs/screenshots/builder.jpg) |
+
+| Order with several bowls | Mobile |
+|---|---|
+| ![Checkout with two bowls](docs/screenshots/checkout.jpg) | ![Mobile view](docs/screenshots/mobile-builder.jpg) |
 
 ## Features
 
@@ -23,12 +27,26 @@ A landing page with a **real-time visual poke bowl builder**. Pick a base, prote
 - **"Surprise me"** builds a random valid bowl. **"Clear bowl"** empties it, and only appears when there is something to clear.
 - **Graceful image fallback**: every ingredient has a drawn placeholder (in its color and shape) until its photo exists, so the app always works, with or without photos.
 
-### Simulated checkout
-- **Three steps**: review your bowl, enter your details, get a confirmation.
-- Quantity selector, notes for the kitchen and a price breakdown, with premium ingredients listed separately.
+### House bowls
+- Four ready-made combos (Hawaiian Classic, Spicy Tuna, Green Vegan, Teriyaki Crunch), each with its price and diet labels.
+- **"Customize"** loads the bowl into the builder to tweak it; **"Add to order"** sends it straight to the order.
+
+### Dietary preferences
+- Three filters: **vegan**, **gluten-free** and **no fish or seafood**.
+- Ingredients that don't match are dimmed and **say why** ("Not vegan", "Contains gluten"); tapping one explains instead of adding it.
+- If the bowl already has something that doesn't match, a notice offers to **remove it** in one tap. "Surprise me" respects the filters too.
+- Every ingredient card shows its diet labels as **text** (Vegan, Gluten-free, Seafood), not only as colors or icons.
+- Labels are **derived from what each ingredient contains** (fish, shellfish, meat, egg, gluten), so one fact drives the filters, the card labels and the house bowl labels.
+
+### Order with several bowls and simulated checkout
+- **"Who's it for?"**: name each bowl (one for you, one for your partner…) before adding it to the order.
+- The order lists every bowl with its picture, editable name, quantity and price; bowls can be removed, and **"Build another bowl"** takes you back to the builder.
+- An **order button** appears in the header (with the number of bowls) as soon as there's something in it.
+- **Three steps**: your order, your details, confirmation.
+- Notes for the kitchen and a price breakdown per bowl.
 - **Pickup or delivery** (with delivery fee and address), **ASAP or scheduled** with real upcoming time slots, and pay-on-arrival options.
 - **Inline validation**: required fields are marked, errors appear under each field, focus jumps to the first invalid field, and each error clears as soon as it's corrected.
-- A confirmation screen with an animated check, an order number and an estimated time.
+- A confirmation screen with an animated check, an order number, an estimated time and a summary of each bowl. The order is emptied once it's placed.
 
 ### Bilingual (Spanish / English)
 - Switch languages by tapping a flag in the top bar. The choice is remembered on the next visit.
@@ -44,9 +62,9 @@ A landing page with a **real-time visual poke bowl builder**. Pick a base, prote
 | Mobile | 99 | 100 | 100 | 100 |
 | Desktop | 100 | 100 | 100 | 100 |
 
-Mobile: First Contentful Paint 1.8 s · Largest Contentful Paint 1.8 s · Cumulative Layout Shift 0.002 (median of 3 runs, Lighthouse 12 default mobile throttling). Measured without the ingredient photos, which aren't in the repository yet (see [Images](#images)).
+Mobile: First Contentful Paint 1.8 s · Largest Contentful Paint 1.9 s · Total Blocking Time 40 ms · Cumulative Layout Shift 0.003 (median of 5 runs, Lighthouse 12 default mobile throttling). Measured without the ingredient photos, which aren't in the repository yet (see [Images](#images)).
 
-**Automated accessibility audit:** axe-core reports **0 violations** of WCAG 2.0 / 2.1 levels A and AA in 6 key states (Spanish and English home, empty bowl, and checkout review, validation errors and confirmation), on both desktop and mobile. These checks run on every push.
+**Automated accessibility audit:** axe-core reports **0 violations** of WCAG 2.0 / 2.1 levels A and AA in 8 key states (Spanish and English home, empty bowl, dietary preferences with conflicting ingredients, and checkout with several bowls, review, validation errors and confirmation), on both desktop and mobile. These checks run on every push.
 
 > Automated tools catch many, but not all, accessibility issues. These results mean no violations were *detected*, not that the site has been certified as WCAG-conformant.
 
@@ -64,6 +82,9 @@ Built so it can be used with a keyboard and a screen reader, not only with a mou
   - Required fields use `aria-required`, plus a visually hidden "(Required)" in place of the `*`.
   - Errors are linked with `aria-invalid` and `aria-describedby`.
 - **Announcements**: notices are announced through an `aria-live` region, and so are changes in quantity.
+- **Notices you can read at your own pace**: they stay for 6 seconds, pause while hovered or focused, and can be closed by hand (WCAG 2.2.1, timing adjustable).
+- **Unavailable is explained, not just greyed out**: ingredients that don't match your preferences use `aria-disabled` and show the reason in text, instead of relying on color or opacity.
+- **Distinct names for repeated buttons**: the four "Add to order" buttons of the house bowls include the bowl's name in visually hidden text ("Add to order (Green Vegan)"), so a screen reader list of buttons isn't five identical entries.
 - **Color contrast**: all text meets at least 4.5:1. The brand coral is used as a background with dark text, and a darker `coral-ink` tone is used whenever coral appears as text.
 - **Visible focus**: every interactive element has a high-contrast focus outline.
 - **Accessible name matches the visible label** (for example, the logo link is announced as "NAMI Poke Bar, home"), so voice-control users can say what they see.
@@ -83,7 +104,8 @@ Built so it can be used with a keyboard and a screen reader, not only with a mou
 - **Notices stored as data, not text**: the store keeps a typed message, and it is translated when shown, so changing the language never leaves stale text behind.
 - **Typed end to end** with TypeScript, linted with oxlint.
 - **No layout shift from missing assets**: images are checked once and cached; placeholders render in the same space.
-- **Fast first paint**: web fonts load without blocking rendering, and metric-matched fallback fonts (Arial adjusted to the brand fonts' width) keep text from jumping when the brand fonts arrive.
+- **Fast first paint**: web fonts load without blocking rendering, and metric-matched fallback fonts (Arial adjusted to the brand fonts' width) keep text from jumping when the brand fonts arrive. The main hero text isn't faded in, so it counts as painted right away.
+- **Only draw what's about to be seen**: bowls and ingredient art mount when they approach the viewport, at low priority (`startTransition`), so scrolling and taps stay responsive. This cut the initial DOM from ~4,500 to ~1,000 elements.
 
 ## Testing
 
@@ -93,10 +115,13 @@ End-to-end tests with **Playwright** run against the production build, in a **de
 |---|---|
 | `e2e/builder.spec.ts` | Default bowl and price, swapping ingredients, size limits and upsell notice, upgrading/downgrading size, removing items, "Clear bowl", guiding to the missing step, "Surprise me" |
 | `e2e/checkout.spec.ts` | Full pickup order, required-field validation, delivery address and fee, scheduled time slots, keyboard behavior (focus trap, `Esc`, focus return, inert background), "Build another bowl" |
+| `e2e/menu.spec.ts` | House bowls (prices, labels, customize, add to order), dietary preferences (dimming and reasons, blocked ingredients, removing conflicts, "Surprise me" with filters), orders with several named bowls (quantity, renaming, removing, emptied after confirming) |
 | `e2e/i18n.spec.ts` | Language switch, `lang` and title, currency format, translated notices, remembered language |
-| `e2e/accessibility.spec.ts` | axe-core WCAG 2.1 A/AA audit (including color contrast) in 6 key states |
+| `e2e/accessibility.spec.ts` | axe-core WCAG 2.1 A/AA audit (including color contrast) in 8 key states |
 
-Tests find elements by **role and accessible name** (`getByRole('button', { name: 'Agregar al pedido' })`), the same way assistive technology does, so a broken label also breaks a test.
+**37 scenarios × 2 viewports = 74 test runs**, repeated back to back to check they aren't flaky.
+
+Tests find elements by **role and accessible name** (`getByRole('button', { name: 'Agregar al pedido (Green Vegan)' })`), the same way assistive technology does, so a broken label also breaks a test.
 
 **Continuous integration:** every push and pull request runs lint, type-check, build and the full Playwright suite on GitHub Actions. The HTML report is attached to each run.
 
@@ -111,14 +136,15 @@ src/
   data/menu.ts            ← single source of truth: sizes, categories, ingredients
   i18n/                   ← Spanish/English messages and the language store
   lib/bowl.ts             ← derived values (price, nutrition, bowl name)
-  store/bowlStore.ts      ← selection state and size rules
+  lib/diet.ts             ← diet rules derived from what each ingredient contains
+  store/bowlStore.ts      ← selection, size rules, dietary filters and the order
   components/
     bowl/Bowl.tsx         ← the animated bowl (a pure function of the configuration)
     art/                  ← real photo of each ingredient, or a drawn placeholder
-    builder/              ← size toggle, steps, ingredient cards, summary
-    checkout/             ← the 3-step checkout modal
-    ui/                   ← logo, flags, language switch, toast, animated numbers
-  sections/               ← top bar, header, hero, how it works, footer
+    builder/              ← size toggle, dietary filters, steps, ingredient cards, summary
+    checkout/             ← the order and 3-step checkout modal
+    ui/                   ← logo, flags, language switch, toast, diet labels, lazy rendering
+  sections/               ← top bar, header, hero, house bowls, how it works, footer
 e2e/                      ← Playwright end-to-end and accessibility tests
 .github/workflows/ci.yml  ← lint, build and tests on every push
 ```

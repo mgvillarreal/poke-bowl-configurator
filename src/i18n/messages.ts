@@ -1,4 +1,5 @@
 import type { CategoryId, SizeId, Tag } from '../data/menu'
+import type { DietFilter } from '../lib/diet'
 import type { NoticeMessage } from '../store/bowlStore'
 
 export type Locale = 'es' | 'en'
@@ -9,7 +10,7 @@ export interface Messages {
   intl: string
   htmlLang: string
   meta: { title: string }
-  header: { home: string; nav: string; build: string; how: string; order: string; language: string }
+  header: { home: string; nav: string; house: string; build: string; how: string; order: string; language: string }
   topBar: string
   hero: {
     badge: string
@@ -54,8 +55,8 @@ export interface Messages {
     doneTitle: string
     bowlLine: (size: string) => string
     quantity: string
-    decrease: string
-    increase: string
+    decrease: (bowl: string) => string
+    increase: (bowl: string) => string
     notes: string
     notesPlaceholder: string
     name: string
@@ -89,6 +90,35 @@ export interface Messages {
     another: string
     done: string
   }
+  houseBowls: {
+    eyebrow: string
+    title: string
+    lead: string
+    customize: string
+    add: string
+    descriptions: Record<string, string>
+  }
+  diet: {
+    legend: string
+    filters: Record<DietFilter, string>
+    labels: { vegan: string; glutenFree: string; seafood: string }
+    reasons: Record<DietFilter, string>
+    conflicts: (n: number) => string
+    removeConflicts: string
+  }
+  cart: {
+    button: (n: number) => string
+    buttonLabel: (n: number) => string
+    forWhom: string
+    forWhomPlaceholder: string
+    defaultName: (n: number) => string
+    nameLabel: (bowl: string) => string
+    remove: (bowl: string) => string
+    addAnother: string
+    empty: string
+    emptyCta: string
+    itemsCount: (n: number) => string
+  }
   ingredients: Record<string, string>
 }
 
@@ -99,6 +129,7 @@ const es: Messages = {
   header: {
     home: 'Poke Bar, inicio',
     nav: 'Principal',
+    house: 'Bowls de la casa',
     build: 'Arma tu bowl',
     how: 'Cómo funciona',
     order: 'Ordenar',
@@ -113,7 +144,7 @@ const es: Messages = {
     lead: 'Poke bowls frescos, a tu manera. Elige base, proteína y toppings, y míralo armarse en tiempo real.',
     ctaBuild: 'Armar mi bowl →',
     ctaHow: '¿Cómo funciona?',
-    photoAlt: 'Poke bowl de salmón, atún, aguacate y mango',
+    photoAlt: 'Poke bowl de salmón, atún, palta y mango',
     stickers: ['100% fresco', 'Listo en 15 min', '¡Nuevo! Mango 🥭'],
   },
   builder: {
@@ -162,6 +193,14 @@ const es: Messages = {
         return 'Primero elige una base para tu bowl.'
       case 'needProtein':
         return 'Elige al menos una proteína (o tofu) para tu bowl.'
+      case 'loaded':
+        return `Cargamos ${m.name}. ¡Ajústalo a tu gusto!`
+      case 'notSuitable':
+        return `${es.ingredients[m.ingredientId]}: ${m.filters.map((f) => es.diet.reasons[f].toLowerCase()).join(', ')}.`
+      case 'conflictsRemoved':
+        return m.count === 1
+          ? 'Quitamos 1 ingrediente que no cumplía tus preferencias.'
+          : `Quitamos ${m.count} ingredientes que no cumplían tus preferencias.`
     }
   },
   how: {
@@ -182,13 +221,13 @@ const es: Messages = {
   checkout: {
     close: 'Cerrar',
     steps: ['Tu pedido', 'Tus datos', 'Confirmación'],
-    reviewTitle: 'Revisa tu bowl',
+    reviewTitle: 'Tu pedido',
     detailsTitle: '¿A nombre de quién?',
     doneTitle: '¡Pedido confirmado!',
     bowlLine: (size) => `Bowl ${size}`,
     quantity: 'Cantidad',
-    decrease: 'Quitar uno',
-    increase: 'Agregar uno',
+    decrease: (bowl) => `Quitar uno: ${bowl}`,
+    increase: (bowl) => `Agregar uno: ${bowl}`,
     notes: 'Notas para la cocina (opcional)',
     notesPlaceholder: 'Ej. sin cebolla, salsa aparte…',
     name: 'Nombre',
@@ -232,6 +271,43 @@ const es: Messages = {
     another: 'Armar otro bowl',
     done: 'Listo',
   },
+  houseBowls: {
+    eyebrow: 'Listos para ti',
+    title: 'Bowls de la casa',
+    lead: 'Nuestras combinaciones favoritas. Pídelos así o personalízalos a tu gusto.',
+    customize: 'Personalizar',
+    add: 'Agregar al pedido',
+    descriptions: {
+      'hawaiian-classic': 'Salmón, palta y mango con ponzu. El clásico de la isla.',
+      'spicy-tuna': 'Atún shoyu con spicy mayo, masago y cebolla crujiente.',
+      'green-vegan': 'Hojas verdes, tofu crujiente y aderezo de sésamo. 100% vegetal.',
+      'teriyaki-crunch': 'Pollo teriyaki y camarón sobre arroz integral. Tamaño Grande.',
+    },
+  },
+  diet: {
+    legend: 'Preferencias',
+    filters: { vegan: 'Vegano', glutenFree: 'Sin gluten', noSeafood: 'Sin pescados ni mariscos' },
+    labels: { vegan: 'Vegano', glutenFree: 'Sin gluten', seafood: 'Del mar' },
+    reasons: { vegan: 'No es vegano', glutenFree: 'Contiene gluten', noSeafood: 'Pescado o mariscos' },
+    conflicts: (n) =>
+      n === 1
+        ? '1 ingrediente de tu bowl no cumple tus preferencias.'
+        : `${n} ingredientes de tu bowl no cumplen tus preferencias.`,
+    removeConflicts: 'Quitarlos',
+  },
+  cart: {
+    button: (n) => `Pedido · ${n}`,
+    buttonLabel: (n) => `Ver tu pedido: ${n} bowl${n === 1 ? '' : 's'}`,
+    forWhom: '¿Para quién es? (opcional)',
+    forWhomPlaceholder: 'Ej. Gaby',
+    defaultName: (n) => `Bowl ${n}`,
+    nameLabel: (bowl) => `¿Para quién es ${bowl}?`,
+    remove: (bowl) => `Quitar ${bowl} del pedido`,
+    addAnother: '＋ Armar otro bowl',
+    empty: 'Tu pedido está vacío.',
+    emptyCta: 'Armar un bowl',
+    itemsCount: (n) => `${n} bowl${n === 1 ? '' : 's'}`,
+  },
   ingredients: {
     'rice-white': 'Arroz de sushi',
     'rice-brown': 'Arroz integral',
@@ -242,19 +318,19 @@ const es: Messages = {
     shrimp: 'Camarón',
     'chicken-teriyaki': 'Pollo teriyaki',
     tofu: 'Tofu crujiente',
-    avocado: 'Aguacate',
+    avocado: 'Palta',
     cucumber: 'Pepino',
-    edamame: 'Edamame',
+    edamame: 'Vainas de soja',
     mango: 'Mango',
-    corn: 'Elote',
+    corn: 'Maíz',
     'red-onion': 'Cebolla encurtida',
     carrot: 'Zanahoria',
-    wakame: 'Alga wakame',
+    wakame: 'Wakame',
     ponzu: 'Ponzu',
     'spicy-mayo': 'Spicy mayo',
     teriyaki: 'Teriyaki',
-    sesame: 'Aderezo de ajonjolí',
-    'sesame-seeds': 'Ajonjolí',
+    sesame: 'Aderezo de sésamo',
+    'sesame-seeds': 'Sésamo',
     scallions: 'Cebollín',
     nori: 'Nori',
     'crispy-onion': 'Cebolla crujiente',
@@ -269,6 +345,7 @@ const en: Messages = {
   header: {
     home: 'Poke Bar, home',
     nav: 'Main',
+    house: 'House bowls',
     build: 'Build your bowl',
     how: 'How it works',
     order: 'Order',
@@ -332,6 +409,14 @@ const en: Messages = {
         return 'Pick a base for your bowl first.'
       case 'needProtein':
         return 'Pick at least one protein (or tofu) for your bowl.'
+      case 'loaded':
+        return `${m.name} is loaded. Make it your own!`
+      case 'notSuitable':
+        return `${en.ingredients[m.ingredientId]}: ${m.filters.map((f) => en.diet.reasons[f].toLowerCase()).join(', ')}.`
+      case 'conflictsRemoved':
+        return m.count === 1
+          ? 'We removed 1 ingredient that didn’t match your preferences.'
+          : `We removed ${m.count} ingredients that didn’t match your preferences.`
     }
   },
   how: {
@@ -352,13 +437,13 @@ const en: Messages = {
   checkout: {
     close: 'Close',
     steps: ['Your order', 'Your details', 'Confirmation'],
-    reviewTitle: 'Review your bowl',
+    reviewTitle: 'Your order',
     detailsTitle: 'Who’s it for?',
     doneTitle: 'Order confirmed!',
     bowlLine: (size) => `${size} bowl`,
     quantity: 'Quantity',
-    decrease: 'Remove one',
-    increase: 'Add one',
+    decrease: (bowl) => `Remove one: ${bowl}`,
+    increase: (bowl) => `Add one: ${bowl}`,
     notes: 'Notes for the kitchen (optional)',
     notesPlaceholder: 'E.g. no onion, sauce on the side…',
     name: 'Name',
@@ -401,6 +486,41 @@ const en: Messages = {
     demoNote: 'This is a demo: no charge was made and no real order was placed.',
     another: 'Build another bowl',
     done: 'Done',
+  },
+  houseBowls: {
+    eyebrow: 'Ready for you',
+    title: 'House bowls',
+    lead: 'Our favorite combos. Order them as they are or make them your own.',
+    customize: 'Customize',
+    add: 'Add to order',
+    descriptions: {
+      'hawaiian-classic': 'Salmon, avocado and mango with ponzu. The island classic.',
+      'spicy-tuna': 'Shoyu tuna with spicy mayo, masago and crispy onion.',
+      'green-vegan': 'Mixed greens, crispy tofu and sesame dressing. 100% plant-based.',
+      'teriyaki-crunch': 'Teriyaki chicken and shrimp over brown rice. Large size.',
+    },
+  },
+  diet: {
+    legend: 'Preferences',
+    filters: { vegan: 'Vegan', glutenFree: 'Gluten-free', noSeafood: 'No fish or seafood' },
+    labels: { vegan: 'Vegan', glutenFree: 'Gluten-free', seafood: 'Seafood' },
+    reasons: { vegan: 'Not vegan', glutenFree: 'Contains gluten', noSeafood: 'Fish or seafood' },
+    conflicts: (n) =>
+      n === 1 ? '1 ingredient in your bowl doesn’t match your preferences.' : `${n} ingredients in your bowl don’t match your preferences.`,
+    removeConflicts: 'Remove them',
+  },
+  cart: {
+    button: (n) => `Order · ${n}`,
+    buttonLabel: (n) => `View your order: ${n} bowl${n === 1 ? '' : 's'}`,
+    forWhom: 'Who’s it for? (optional)',
+    forWhomPlaceholder: 'E.g. Gaby',
+    defaultName: (n) => `Bowl ${n}`,
+    nameLabel: (bowl) => `Who’s ${bowl} for?`,
+    remove: (bowl) => `Remove ${bowl} from order`,
+    addAnother: '＋ Build another bowl',
+    empty: 'Your order is empty.',
+    emptyCta: 'Build a bowl',
+    itemsCount: (n) => `${n} bowl${n === 1 ? '' : 's'}`,
   },
   ingredients: {
     'rice-white': 'Sushi rice',

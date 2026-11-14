@@ -1,11 +1,11 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent, type ReactNode } from 'react'
-import { CATEGORIES, DELIVERY_FEE, SIZE_BY_ID } from '../../data/menu'
+import { DELIVERY_FEE } from '../../data/menu'
 import type { DeliveryMode } from '../../i18n/messages'
 import { useT } from '../../i18n/useLocale'
-import { bowlName, bowlTotals, ingredientName, premiumIngredients } from '../../lib/bowl'
+import { bowlName, bowlTotals, ingredientName, selectedIngredients } from '../../lib/bowl'
 import { formatMoney } from '../../lib/format'
-import { useBowlStore } from '../../store/bowlStore'
+import { useBowlStore, type CartItem } from '../../store/bowlStore'
 import { Bowl } from '../bowl/Bowl'
 
 type Step = 'review' | 'details' | 'processing' | 'done'
@@ -42,17 +42,18 @@ export function CheckoutModal() {
 function CheckoutDialog() {
   const t = useT()
   const c = t.checkout
-  const size = useBowlStore((s) => s.size)
-  const selection = useBowlStore((s) => s.selection)
+  const cart = useBowlStore((s) => s.cart)
+  const updateCartItem = useBowlStore((s) => s.updateCartItem)
+  const removeCartItem = useBowlStore((s) => s.removeCartItem)
+  const clearCart = useBowlStore((s) => s.clearCart)
   const close = useBowlStore((s) => s.closeCheckout)
   const clear = useBowlStore((s) => s.clear)
 
-  const config = { size, selection }
-  const totals = bowlTotals(config)
   const slots = useMemo(() => nextSlots(t.intl), [t.intl])
 
   const [step, setStep] = useState<Step>('review')
-  const [quantity, setQuantity] = useState(1)
+  /** Resumen del pedido ya enviado (el carrito se vacía al confirmarse) */
+  const [placed, setPlaced] = useState<{ lines: string[]; total: number } | null>(null)
   const [errors, setErrors] = useState<Partial<Record<Field, string>>>({})
   const [orderNumber] = useState(() => `NAMI-${Math.floor(1000 + Math.random() * 9000)}`)
   const [form, setForm] = useState<OrderForm>({
@@ -67,8 +68,13 @@ function CheckoutDialog() {
   })
 
   const fee = form.mode === 'delivery' ? DELIVERY_FEE : 0
-  const subtotal = totals.price * quantity
+  const lineTotal = (item: CartItem) => bowlTotals(item.config).price * item.quantity
+  const subtotal = cart.reduce((sum, item) => sum + lineTotal(item), 0)
   const total = subtotal + fee
+  const bowlCount = cart.reduce((sum, item) => sum + item.quantity, 0)
+  /** Nombre con el que se muestra cada bowl: "Para quién" o "Bowl 1, 2…" */
+  const labelOf = (item: CartItem, index: number) => item.name || t.cart.defaultName(index + 1)
+  const titleOf = (item: CartItem) => item.title ?? bowlName(item.config, t)
   const money = (value: number) => formatMoney(value, t.intl)
   const update = <K extends keyof OrderForm>(key: K, value: OrderForm[K]) => {
     setForm((f) => ({ ...f, [key]: value }))
@@ -105,9 +111,12 @@ function CheckoutDialog() {
   // Simula el envío a la cocina
   useEffect(() => {
     if (step !== 'processing') return
-    const timer = setTimeout(() => setStep('done'), 1600)
+    const timer = setTimeout(() => {
+      setStep('done')
+      clearCart()
+    }, 1600)
     return () => clearTimeout(timer)
-  }, [step])
+  }, [step, clearCart])
 
   const canClose = step !== 'processing'
   const requestClose = () => canClose && close()
@@ -145,13 +154,22 @@ function CheckoutDialog() {
   }
 
   const confirm = () => {
-    if (validate()) setStep('processing')
+    if (!validate()) return
+    setPlaced({
+      lines: cart.map((item, i) => `${item.quantity} × ${titleOf(item)} (${labelOf(item, i)})`),
+      total,
+    })
+    setStep('processing')
+  }
+
+  const goToBuilder = () => {
+    close()
+    document.getElementById('armar')?.scrollIntoView({ behavior: 'smooth' })
   }
 
   const buildAnother = () => {
-    close()
     clear()
-    document.getElementById('armar')?.scrollIntoView({ behavior: 'smooth' })
+    goToBuilder()
   }
 
   const stepIndex = step === 'review' ? 0 : step === 'details' ? 1 : 2
@@ -219,63 +237,138 @@ function CheckoutDialog() {
           >
             {step === 'review' && (
               <>
-                <h2 id={titleId} className="font-display text-2xl">
-                  {c.reviewTitle}
-                </h2>
+                <div className="flex items-baseline justify-between gap-2">
+                  <h2 id={titleId} className="font-display text-2xl">
+                    {c.reviewTitle}
+                  </h2>
+                  {cart.length > 0 && <p className="text-sm font-bold text-nori/75">{t.cart.itemsCount(bowlCount)}</p>}
+                </div>
 
-                <div className="mt-5 flex gap-4 rounded-3xl border-2 border-nori bg-white p-4">
-                  <div className="w-28 shrink-0 sm:w-32">
-                    <Bowl config={config} />
+                {cart.length === 0 ? (
+                  <div className="mt-6 rounded-3xl border-2 border-dashed border-nori/40 bg-white p-8 text-center">
+                    <p className="font-bold">{t.cart.empty}</p>
+                    <PrimaryButton onClick={goToBuilder}>{t.cart.emptyCta}</PrimaryButton>
                   </div>
-                  <div className="min-w-0">
-                    <p className="text-xs font-bold tracking-widest text-coral-ink uppercase">{c.bowlLine(t.sizes[size].label)}</p>
-                    <p className="font-display text-lg leading-tight">{bowlName(config, t)}</p>
-                    <dl className="mt-2 space-y-0.5 text-xs text-nori/75">
-                      {CATEGORIES.filter((cat) => selection[cat.id].length > 0).map((cat) => (
-                        <div key={cat.id}>
-                          <dt className="inline font-bold">{t.categories[cat.id].label}: </dt>
-                          <dd className="inline">{selection[cat.id].map((id) => ingredientName(t, id)).join(', ')}</dd>
-                        </div>
+                ) : (
+                  <>
+                    <ul aria-labelledby={titleId} className="mt-5 space-y-3">
+                      <AnimatePresence initial={false}>
+                        {cart.map((item, i) => {
+                          const label = labelOf(item, i)
+                          return (
+                            <motion.li
+                              key={item.id}
+                              layout
+                              initial={{ opacity: 0, y: 12 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, x: -40, transition: { duration: 0.2 } }}
+                              className="rounded-3xl border-2 border-nori bg-white p-4"
+                            >
+                              <div className="flex gap-3">
+                                <div className="w-20 shrink-0">
+                                  <Bowl config={item.config} />
+                                </div>
+                                <div className="min-w-0 flex-1">
+                                  <label htmlFor={`${item.id}-name`} className="sr-only">
+                                    {t.cart.nameLabel(label)}
+                                  </label>
+                                  <input
+                                    id={`${item.id}-name`}
+                                    value={item.name}
+                                    maxLength={24}
+                                    placeholder={t.cart.defaultName(i + 1)}
+                                    onChange={(e) => updateCartItem(item.id, { name: e.target.value })}
+                                    className="w-full rounded-lg border-2 border-transparent bg-transparent px-1 text-xs font-bold tracking-widest text-coral-ink uppercase placeholder:text-coral-ink hover:border-nori/30 focus:border-nori focus:outline-none"
+                                  />
+                                  <p className="px-1 font-display leading-tight">{titleOf(item)}</p>
+                                  <p className="mt-0.5 px-1 text-xs text-nori/75">
+                                    {t.sizes[item.config.size].label} ·{' '}
+                                    {selectedIngredients(item.config)
+                                      .map((ing) => ingredientName(t, ing.id))
+                                      .join(', ')}
+                                  </p>
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() => removeCartItem(item.id)}
+                                  aria-label={t.cart.remove(label)}
+                                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 border-nori/30 transition-colors hover:border-nori hover:bg-sakura focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-nori"
+                                >
+                                  <svg viewBox="0 0 20 20" className="h-4 w-4" aria-hidden>
+                                    <path
+                                      d="M4 6h12M8 6V4h4v2m-6 0 .7 10h6.6L14 6"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      strokeWidth={1.8}
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                    />
+                                  </svg>
+                                </button>
+                              </div>
+
+                              <div className="mt-3 flex items-center justify-between">
+                                <div className="flex items-center gap-3 rounded-full border-2 border-nori bg-white p-1">
+                                  <StepperButton
+                                    label={c.decrease(label)}
+                                    disabled={item.quantity <= 1}
+                                    onClick={() => updateCartItem(item.id, { quantity: item.quantity - 1 })}
+                                  >
+                                    −
+                                  </StepperButton>
+                                  <span className="w-6 text-center font-display text-lg tabular-nums" aria-live="polite">
+                                    {item.quantity}
+                                  </span>
+                                  <StepperButton
+                                    label={c.increase(label)}
+                                    disabled={item.quantity >= 10}
+                                    onClick={() => updateCartItem(item.id, { quantity: item.quantity + 1 })}
+                                  >
+                                    +
+                                  </StepperButton>
+                                </div>
+                                <p className="font-display text-lg tabular-nums">{money(lineTotal(item))}</p>
+                              </div>
+                            </motion.li>
+                          )
+                        })}
+                      </AnimatePresence>
+                    </ul>
+
+                    <button
+                      type="button"
+                      onClick={goToBuilder}
+                      className="mt-3 w-full rounded-2xl border-2 border-dashed border-nori/50 px-4 py-3 font-bold transition-colors hover:border-nori hover:bg-white focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-nori"
+                    >
+                      {t.cart.addAnother}
+                    </button>
+
+                    <label className="mt-5 block">
+                      <span className="font-bold">{c.notes}</span>
+                      <textarea
+                        value={form.notes}
+                        onChange={(e) => update('notes', e.target.value)}
+                        placeholder={c.notesPlaceholder}
+                        rows={2}
+                        className={`${INPUT} mt-1 resize-none`}
+                      />
+                    </label>
+
+                    <Breakdown>
+                      {cart.map((item, i) => (
+                        <Line
+                          key={item.id}
+                          label={`${labelOf(item, i)}${item.quantity > 1 ? ` × ${item.quantity}` : ''}`}
+                          value={money(lineTotal(item))}
+                          muted
+                        />
                       ))}
-                    </dl>
-                  </div>
-                </div>
+                      <Line label={c.subtotal} value={money(subtotal)} strong />
+                    </Breakdown>
 
-                <div className="mt-5 flex items-center justify-between">
-                  <span className="font-bold">{c.quantity}</span>
-                  <div className="flex items-center gap-3 rounded-full border-2 border-nori bg-white p-1">
-                    <StepperButton label={c.decrease} disabled={quantity <= 1} onClick={() => setQuantity((q) => q - 1)}>
-                      −
-                    </StepperButton>
-                    <span className="w-6 text-center font-display text-lg tabular-nums" aria-live="polite">
-                      {quantity}
-                    </span>
-                    <StepperButton label={c.increase} disabled={quantity >= 10} onClick={() => setQuantity((q) => q + 1)}>
-                      +
-                    </StepperButton>
-                  </div>
-                </div>
-
-                <label className="mt-5 block">
-                  <span className="font-bold">{c.notes}</span>
-                  <textarea
-                    value={form.notes}
-                    onChange={(e) => update('notes', e.target.value)}
-                    placeholder={c.notesPlaceholder}
-                    rows={2}
-                    className={`${INPUT} mt-1 resize-none`}
-                  />
-                </label>
-
-                <Breakdown>
-                  <Line label={`${c.bowlLine(t.sizes[size].label)}${quantity > 1 ? ` × ${quantity}` : ''}`} value={money(SIZE_BY_ID[size].price * quantity)} />
-                  {premiumIngredients(config).map((i) => (
-                    <Line key={i.id} label={`+ ${ingredientName(t, i.id)}`} value={money(i.price * quantity)} muted />
-                  ))}
-                  <Line label={c.subtotal} value={money(subtotal)} strong />
-                </Breakdown>
-
-                <PrimaryButton onClick={() => setStep('details')}>{c.continue}</PrimaryButton>
+                    <PrimaryButton onClick={() => setStep('details')}>{c.continue}</PrimaryButton>
+                  </>
+                )}
               </>
             )}
 
@@ -452,9 +545,16 @@ function CheckoutDialog() {
                 <div className="mt-5 w-full rounded-3xl border-2 border-dashed border-nori/40 bg-white p-4">
                   <p className="text-xs font-bold tracking-widest text-nori/75 uppercase">{c.orderNumber}</p>
                   <p className="font-display text-2xl tracking-wider text-coral-ink">{orderNumber}</p>
-                  <p className="mt-1 text-sm">
-                    {quantity} × {bowlName(config, t)} · <strong>{money(total)}</strong>
-                  </p>
+                  {placed && (
+                    <>
+                      <ul className="mt-2 space-y-0.5 text-sm">
+                        {placed.lines.map((line) => (
+                          <li key={line}>{line}</li>
+                        ))}
+                      </ul>
+                      <p className="mt-2 font-display text-lg">{money(placed.total)}</p>
+                    </>
+                  )}
                 </div>
 
                 <p className="mt-4 rounded-full bg-mango/40 px-3 py-1 text-xs font-bold">{c.demoNote}</p>

@@ -37,16 +37,33 @@ test.describe('Accesibilidad (axe-core, WCAG 2.1 AA)', () => {
     await expectNoViolations(page)
   })
 
+  test('preferencias activas con ingredientes no aptos', async ({ page }) => {
+    await page.goto('/')
+    await page.getByRole('group', { name: 'Preferencias' }).getByRole('button', { name: 'Vegano' }).click()
+    await page.getByRole('tab', { name: /Proteína/ }).click()
+    await expect(page.getByText(/no cumplen tus preferencias/)).toBeVisible()
+    await expectNoViolations(page)
+  })
+
+  test('checkout: pedido con varios bowls', async ({ page }) => {
+    await page.goto('/')
+    await page.getByRole('button', { name: 'Agregar al pedido (Green Vegan)' }).click()
+    await page.getByRole('button', { name: /Armar otro bowl/ }).click()
+    await page.getByRole('button', { name: 'Agregar al pedido', exact: true }).click()
+    await expect(page.getByRole('dialog').getByRole('list', { name: 'Tu pedido' }).getByRole('listitem')).toHaveCount(2)
+    await expectNoViolations(page)
+  })
+
   test('checkout: revisión del pedido', async ({ page }) => {
     await page.goto('/')
-    await page.getByRole('button', { name: 'Agregar al pedido' }).click()
+    await page.getByRole('button', { name: 'Agregar al pedido', exact: true }).click()
     await expect(page.getByRole('dialog')).toBeVisible()
     await expectNoViolations(page)
   })
 
   test('checkout: datos con errores de validación', async ({ page }) => {
     await page.goto('/')
-    await page.getByRole('button', { name: 'Agregar al pedido' }).click()
+    await page.getByRole('button', { name: 'Agregar al pedido', exact: true }).click()
     await page.getByRole('button', { name: 'Continuar' }).click()
     const dialog = page.getByRole('dialog')
     await dialog.getByText('A domicilio', { exact: true }).click()
@@ -58,7 +75,7 @@ test.describe('Accesibilidad (axe-core, WCAG 2.1 AA)', () => {
 
   test('checkout: confirmación', async ({ page }) => {
     await page.goto('/')
-    await page.getByRole('button', { name: 'Agregar al pedido' }).click()
+    await page.getByRole('button', { name: 'Agregar al pedido', exact: true }).click()
     await page.getByRole('button', { name: 'Continuar' }).click()
     await page.getByLabel(/Nombre/).fill('Gaby')
     await page.getByLabel(/Teléfono/).fill('5512345678')
