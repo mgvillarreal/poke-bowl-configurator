@@ -28,7 +28,7 @@ export function SummaryBar() {
   }
 
   return (
-    <div className="sticky bottom-4 z-20 flex items-center justify-between gap-4 rounded-3xl border-2 border-nori bg-white p-4 shadow-sticker-lg">
+    <div className="flex items-center justify-between gap-4 rounded-3xl border-2 border-nori bg-white p-4 shadow-sticker-lg">
       <div>
         <p className="text-xs font-bold tracking-widest text-nori/60 uppercase">{t.summary.total}</p>
         <p className="font-display text-3xl leading-none">
