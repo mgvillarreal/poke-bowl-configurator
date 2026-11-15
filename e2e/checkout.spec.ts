@@ -25,7 +25,7 @@ test('pedido completo para recoger en tienda', async ({ page }) => {
   await expect(dialog.getByText('Enviando tu pedido a la cocina…')).toBeVisible()
   await expect(dialog.getByRole('heading', { name: '¡Pedido confirmado!' })).toBeVisible()
   await expect(dialog.getByText(/NAMI-\d{4}/)).toBeVisible()
-  await expect(dialog.getByText('Tu bowl estará listo en unos 15 min en Nami.')).toBeVisible()
+  await expect(dialog.getByText('Tu pedido estará listo para recoger en unos 15 min en Nami.')).toBeVisible()
 
   await dialog.getByRole('button', { name: 'Listo' }).click()
   await expect(dialog).toBeHidden()
@@ -68,7 +68,7 @@ test('a domicilio pide dirección y suma el envío', async ({ page }) => {
 
   await dialog.getByLabel(/Dirección de entrega/).fill('Av. Ámsterdam 123')
   await dialog.getByRole('button', { name: /Confirmar pedido/ }).click()
-  await expect(dialog.getByText('Tu bowl llegará en unos 35 min.')).toBeVisible()
+  await expect(dialog.getByText('Tu pedido llegará en unos 35 min.')).toBeVisible()
 })
 
 test('programar muestra los horarios con el badge "Hoy"', async ({ page }) => {

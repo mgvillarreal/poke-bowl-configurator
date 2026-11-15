@@ -245,7 +245,7 @@ function CheckoutDialog() {
                 </div>
 
                 {cart.length === 0 ? (
-                  <div className="mt-6 rounded-3xl border-2 border-dashed border-nori/40 bg-white p-8 text-center">
+                  <div className="mt-6 rounded-3xl border-2 border-nori/40 bg-white p-8 text-center">
                     <p className="font-bold">{t.cart.empty}</p>
                     <PrimaryButton onClick={goToBuilder}>{t.cart.emptyCta}</PrimaryButton>
                   </div>
@@ -338,7 +338,7 @@ function CheckoutDialog() {
                     <button
                       type="button"
                       onClick={goToBuilder}
-                      className="mt-3 w-full rounded-2xl border-2 border-dashed border-nori/50 px-4 py-3 font-bold transition-colors hover:border-nori hover:bg-white focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-nori"
+                      className="mt-3 w-full rounded-2xl border-2 border-nori/50 px-4 py-3 font-bold transition-colors hover:border-nori hover:bg-white focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-nori"
                     >
                       {t.cart.addAnother}
                     </button>

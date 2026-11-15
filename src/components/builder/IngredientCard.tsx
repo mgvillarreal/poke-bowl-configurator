@@ -43,7 +43,7 @@ export function IngredientCard({ ingredient, selected, dimmed, blockedBy, onTogg
             ? 'border-coral-ink bg-sakura shadow-sticker'
             : 'border-nori bg-sakura shadow-sticker'
           : unavailable
-            ? 'cursor-not-allowed border-dashed border-nori/40 bg-white'
+            ? 'cursor-not-allowed border-nori/40 bg-white'
             : 'border-nori/10 bg-white hover:border-nori/40'
       }`}
     >

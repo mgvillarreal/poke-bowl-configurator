@@ -190,7 +190,7 @@ const es: Messages = {
       case 'needBase':
         return 'Primero elige una base para tu bowl.'
       case 'needProtein':
-        return 'Elige al menos una proteína (o tofu) para tu bowl.'
+        return 'Elige al menos una proteína para tu bowl (¡el tofu cuenta!).'
       case 'loaded':
         return `Cargamos ${m.name}. ¡Ajústalo a tu gusto!`
       case 'notSuitable':
@@ -263,7 +263,7 @@ const es: Messages = {
     orderNumber: 'Número de pedido',
     eta: (mode, slot) => {
       const when = slot ? `a las ${slot}` : mode === 'pickup' ? 'en unos 15 min' : 'en unos 35 min'
-      return mode === 'pickup' ? `Tu bowl estará listo ${when} en Nami.` : `Tu bowl llegará ${when}.`
+      return mode === 'pickup' ? `Tu pedido estará listo para recoger ${when} en Nami.` : `Tu pedido llegará ${when}.`
     },
     demoNote: 'Es una demo: no se hizo ningún cargo ni pedido real.',
     another: 'Armar otro bowl',
@@ -349,13 +349,13 @@ const en: Messages = {
     order: 'Order',
     language: 'Language',
   },
-  topBar: '🍚 Pick up in 15 min · Delivery available',
+  topBar: '🍚 Ready for pickup in 15 min · Delivery available',
   hero: {
     badge: 'Poke bar · ポケ',
     line1: 'Ride',
     line2: 'your',
     accent: 'wave.',
-    lead: 'Fresh poke bowls, your way. Pick a base, protein and toppings, and watch it come together in real time.',
+    lead: 'Fresh poke bowls, your way. Pick a base, protein and toppings, and watch your bowl come together in real time.',
     ctaBuild: 'Build my bowl →',
     ctaHow: 'How it works',
     stickers: ['100% fresh', 'Ready in 15 min', 'New! Mango 🥭'],
@@ -399,15 +399,15 @@ const en: Messages = {
           : `Up to ${m.limit} ${noun}. Remove one to swap.`
       }
       case 'resized':
-        return `We adjusted your bowl to ${en.sizes[m.size].label}.`
+        return `We trimmed your bowl to fit the ${en.sizes[m.size].label} size.`
       case 'surprise':
         return '🎲 Surprise bowl! Tweak it to your taste.'
       case 'needBase':
         return 'Pick a base for your bowl first.'
       case 'needProtein':
-        return 'Pick at least one protein (or tofu) for your bowl.'
+        return 'Pick at least one protein for your bowl (tofu counts!).'
       case 'loaded':
-        return `${m.name} is loaded. Make it your own!`
+        return `${m.name} is in the builder. Make it your own!`
       case 'notSuitable':
         return `${en.ingredients[m.ingredientId]}: ${m.filters.map((f) => en.diet.reasons[f].toLowerCase()).join(', ')}.`
       case 'conflictsRemoved':
@@ -417,11 +417,11 @@ const en: Messages = {
     }
   },
   how: {
-    eyebrow: 'Easy as that',
+    eyebrow: 'Easy as 1-2-3',
     title: 'How it works',
     steps: [
       { title: 'Pick your base', text: 'Sushi rice, brown rice, quinoa or fresh mixed greens.' },
-      { title: 'Add some color', text: 'Protein of the day, fruit, veggies, sauces and crunchy toppings.' },
+      { title: 'Add some color', text: 'Your choice of protein, fruit, veggies, sauces and crunchy toppings.' },
       { title: 'Pick up in 15 min', text: 'We make it fresh and let you know when it’s ready.' },
     ],
   },
@@ -435,12 +435,12 @@ const en: Messages = {
     close: 'Close',
     steps: ['Your order', 'Your details', 'Confirmation'],
     reviewTitle: 'Your order',
-    detailsTitle: 'Who’s it for?',
+    detailsTitle: 'Who’s ordering?',
     doneTitle: 'Order confirmed!',
     bowlLine: (size) => `${size} bowl`,
     quantity: 'Quantity',
-    decrease: (bowl) => `Remove one: ${bowl}`,
-    increase: (bowl) => `Add one: ${bowl}`,
+    decrease: (bowl) => `Decrease quantity of ${bowl}`,
+    increase: (bowl) => `Increase quantity of ${bowl}`,
     notes: 'Notes for the kitchen (optional)',
     notesPlaceholder: 'E.g. no onion, sauce on the side…',
     name: 'Name',
@@ -448,20 +448,20 @@ const en: Messages = {
     phoneHint: '10 digits',
     required: 'Required',
     today: 'Today',
-    mode: 'How do you want it?',
+    mode: 'Pickup or delivery?',
     modes: {
-      pickup: { label: 'Pick up in store', detail: () => 'Nami · free' },
+      pickup: { label: 'In-store pickup', detail: () => 'At Nami · Free' },
       delivery: { label: 'Delivery', detail: (fee) => `+${fee} · ~35 min` },
     },
     address: 'Delivery address',
-    addressPlaceholder: 'Street, number and neighborhood',
+    addressPlaceholder: 'Street address, apt, neighborhood',
     when: 'When?',
-    asap: 'As soon as possible',
-    schedule: 'Schedule',
+    asap: 'ASAP',
+    schedule: 'Schedule for later',
     time: 'Time',
-    payment: 'Pay on arrival',
+    payment: 'Pay in person',
     cash: 'Cash',
-    card: 'Card on terminal',
+    card: 'Card',
     subtotal: 'Subtotal',
     deliveryFee: 'Delivery',
     free: 'Free',
@@ -478,7 +478,7 @@ const en: Messages = {
     orderNumber: 'Order number',
     eta: (mode, slot) => {
       const when = slot ? `at ${slot}` : mode === 'pickup' ? 'in about 15 min' : 'in about 35 min'
-      return mode === 'pickup' ? `Your bowl will be ready ${when} at Nami.` : `Your bowl will arrive ${when}.`
+      return mode === 'pickup' ? `Your order will be ready for pickup at Nami ${when}.` : `Your order will arrive ${when}.`
     },
     demoNote: 'This is a demo: no charge was made and no real order was placed.',
     another: 'Build another bowl',
@@ -487,21 +487,21 @@ const en: Messages = {
   houseBowls: {
     eyebrow: 'Ready for you',
     title: 'House bowls',
-    lead: 'Our favorite combos. Order them as they are or make them your own.',
+    lead: 'Our favorite combos. Order them as is, or make them your own.',
     customize: 'Customize',
     add: 'Add to order',
     descriptions: {
       'hawaiian-classic': 'Salmon, avocado and mango with ponzu. The island classic.',
-      'spicy-tuna': 'Shoyu tuna with spicy mayo, masago and crispy onion.',
+      'spicy-tuna': 'Shoyu tuna with spicy mayo, masago and crispy onions.',
       'green-vegan': 'Mixed greens, crispy tofu and sesame dressing. 100% plant-based.',
       'teriyaki-crunch': 'Teriyaki chicken and shrimp over brown rice. Large size.',
     },
   },
   diet: {
-    legend: 'Preferences',
+    legend: 'Dietary preferences',
     filters: { vegan: 'Vegan', glutenFree: 'Gluten-free', noSeafood: 'No fish or seafood' },
     labels: { vegan: 'Vegan', glutenFree: 'Gluten-free', seafood: 'Seafood' },
-    reasons: { vegan: 'Not vegan', glutenFree: 'Contains gluten', noSeafood: 'Fish or seafood' },
+    reasons: { vegan: 'Not vegan', glutenFree: 'Contains gluten', noSeafood: 'Contains seafood' },
     conflicts: (n) =>
       n === 1 ? '1 ingredient in your bowl doesn’t match your preferences.' : `${n} ingredients in your bowl don’t match your preferences.`,
     removeConflicts: 'Remove them',
@@ -534,17 +534,17 @@ const en: Messages = {
     edamame: 'Edamame',
     mango: 'Mango',
     corn: 'Corn',
-    'red-onion': 'Pickled onion',
+    'red-onion': 'Pickled red onion',
     carrot: 'Carrot',
-    wakame: 'Wakame seaweed',
+    wakame: 'Seaweed salad',
     ponzu: 'Ponzu',
     'spicy-mayo': 'Spicy mayo',
-    teriyaki: 'Teriyaki',
+    teriyaki: 'Teriyaki sauce',
     sesame: 'Sesame dressing',
     'sesame-seeds': 'Sesame seeds',
     scallions: 'Scallions',
     nori: 'Nori',
-    'crispy-onion': 'Crispy onion',
+    'crispy-onion': 'Crispy onions',
     masago: 'Masago',
   },
 }

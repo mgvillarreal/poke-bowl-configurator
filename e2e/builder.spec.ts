@@ -84,7 +84,7 @@ test('"Agregar al pedido" lleva al paso que falta', async ({ page }) => {
 
   await card(page, /Arroz integral/).click()
   await page.getByRole('button', { name: 'Agregar al pedido', exact: true }).click()
-  await expect(page.getByText('Elige al menos una proteína (o tofu) para tu bowl.')).toBeVisible()
+  await expect(page.getByText('Elige al menos una proteína para tu bowl (¡el tofu cuenta!).')).toBeVisible()
   await expect(page.getByRole('tab', { name: /Proteína/ })).toHaveAttribute('aria-selected', 'true')
   await expect(page.getByRole('dialog')).toBeHidden()
 })
