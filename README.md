@@ -36,7 +36,7 @@ A landing page with a **real-time visual poke bowl builder**. Start from a house
 - Three filters: **vegan**, **gluten-free** and **no fish or seafood**.
 - Ingredients that don't match are dimmed and **say why** ("Not vegan", "Contains gluten"); tapping one explains instead of adding it.
 - If the bowl already has something that doesn't match, a notice offers to **remove it** in one tap. "Surprise me" respects the filters too.
-- Every ingredient card shows its diet labels as **text** (Vegan, Gluten-free, Seafood), not only as colors or icons.
+- Ingredient cards only label **what sets them apart** (Seafood, Contains gluten, Not vegan), as text rather than color or icons. Most ingredients are vegan and gluten-free, so marking them all would just be noise.
 - Labels are **derived from what each ingredient contains** (fish, shellfish, meat, egg, gluten), so one fact drives the filters, the card labels and the house bowl labels.
 
 ### Order with several bowls and simulated checkout
@@ -63,11 +63,18 @@ A landing page with a **real-time visual poke bowl builder**. Start from a house
 | Mobile | 94 | 100 | 100 | 100 |
 | Desktop | 100 | 100 | 100 | 100 |
 
-Mobile: First Contentful Paint 2.3 s · Largest Contentful Paint 2.6 s · Total Blocking Time 0 ms · Cumulative Layout Shift 0.001 · 611 KiB transferred (median of 5 runs, Lighthouse 12 default mobile throttling). Measured **with the real ingredient photos**.
+Mobile: First Contentful Paint 2.3 s · Largest Contentful Paint 2.6 s · Total Blocking Time 20 ms · Cumulative Layout Shift 0.001 · 612 KiB transferred (median of 5 runs, Lighthouse 12 default mobile throttling). Measured **with the real ingredient photos**.
 
 **Automated accessibility audit:** axe-core reports **0 violations** of WCAG 2.0 / 2.1 levels A and AA in 8 key states (Spanish and English home, empty bowl, dietary preferences with conflicting ingredients, and checkout with several bowls, review, validation errors and confirmation), on both desktop and mobile. These checks run on every push.
 
 > Automated tools catch many, but not all, accessibility issues. These results mean no violations were *detected*, not that the site has been certified as WCAG-conformant.
+
+## Design
+
+- **One visual language, not a template**: a small set of custom line icons (2 px, rounded ends, the same stroke as the logo's wave) instead of emojis or mixed symbols.
+- **Emphasis is earned**: the hard "sticker" shadow is reserved for the key action of each moment ("Order", "Build my bowl", "Add to order", the checkout's main button) and for the bowl stage; everything else uses a quiet thin border, so the eye goes straight to what matters.
+- **The product is the hero**: the first view shows the bowl itself, slowly spinning, with its ingredients dropping in once the page loads, a preview of the builder rather than generic marketing badges.
+- **Japanese wave pattern (seigaiha)** used as a brand texture in the hero, the builder stage and the house bowl cards.
 
 ## Accessibility
 
@@ -90,7 +97,7 @@ Built so it can be used with a keyboard and a screen reader, not only with a mou
 - **Visible focus**: every interactive element has a high-contrast focus outline.
 - **Accessible name matches the visible label** (for example, the logo link is announced as "NAMI Poke Bar, home"), so voice-control users can say what they see.
 - **Reduced motion**: respects the system's `prefers-reduced-motion` setting, for both Motion animations and smooth scrolling.
-- **Decorative content hidden**: decorative graphics (patterns, Japanese characters, the bowl art) are hidden from assistive technology.
+- **Decorative content hidden**: decorative graphics (patterns, Japanese characters, the bowl art, icons) are hidden from assistive technology; every icon sits next to a text label that carries the meaning.
 
 ## Responsive design
 
@@ -148,7 +155,7 @@ src/
     art/                  ← real photo of each ingredient, or a drawn placeholder
     builder/              ← size toggle, dietary filters, steps, ingredient cards, summary
     checkout/             ← the order and 3-step checkout modal
-    ui/                   ← logo, flags, language switch, toast, diet labels, lazy rendering
+    ui/                   ← icons, logo, flags, language switch, toast, diet labels, lazy rendering
   sections/               ← top bar, header, hero, house bowls, how it works, footer
 e2e/                      ← Playwright end-to-end and accessibility tests
 scripts/optimize-images.mjs ← PNG → WebP in two sizes (npm run images)
@@ -157,7 +164,7 @@ scripts/optimize-images.mjs ← PNG → WebP in two sizes (npm run images)
 
 ## Images
 
-Ingredient photos are generated with AI using a shared style block, so every layer has the same top-down angle and lighting. The prompts are in [`docs/prompts-imagenes.md`](docs/prompts-imagenes.md) (in Spanish).
+Ingredient photos are generated with AI using a shared style, so every layer has the same top-down angle and lighting and the bowl reads as a single photo.
 
 - **Source**: high-resolution PNGs with transparency in `assets/images/` (kept out of the repository).
 - **Published**: `npm run images` turns them into WebP files in `public/images/`, in two widths per photo. Widths per folder live in [`src/data/image-widths.json`](src/data/image-widths.json), shared by the script and the app.
