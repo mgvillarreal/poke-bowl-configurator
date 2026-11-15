@@ -191,4 +191,4 @@ Locally, the tests use your installed Google Chrome; in CI they use Playwright's
 
 ---
 
-Made with care by **Gabriela Villarreal**.
+A digital experience by **Gabriela Villarreal**.

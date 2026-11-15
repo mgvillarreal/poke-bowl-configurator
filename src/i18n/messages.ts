@@ -212,7 +212,7 @@ const es: Messages = {
     tagline: 'Poke bowls frescos, armados a tu manera.',
     disclaimer:
       'Nami Poke Bar es una marca ficticia creada como proyecto conceptual de portafolio. Menú, precios y pedidos son de demostración.',
-    madeWith: 'Hecho con cariño.',
+    madeWith: 'Una experiencia digital de',
   },
   checkout: {
     close: 'Cerrar',
@@ -426,7 +426,7 @@ const en: Messages = {
     tagline: 'Fresh poke bowls, made your way.',
     disclaimer:
       'Nami Poke Bar is a fictional brand created as a portfolio concept project. Menu, prices and orders are for demo purposes only.',
-    madeWith: 'Made with care.',
+    madeWith: 'A digital experience by',
   },
   checkout: {
     close: 'Close',
