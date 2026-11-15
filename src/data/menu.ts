@@ -2,8 +2,10 @@
  * Fuente única de datos del menú de Nami Poke Bar.
  * La UI, los límites, el precio, la nutrición y el dibujo del bowl se derivan de aquí:
  * agregar un ingrediente = agregar un objeto a INGREDIENTS, su nombre en src/i18n/messages.ts
- * y su foto en public/images/.
+ * y su foto en assets/images/ (luego `npm run images`).
  */
+
+import IMAGE_WIDTHS from './image-widths.json'
 
 export type CategoryId = 'base' | 'protein' | 'extra' | 'sauce' | 'topping'
 export type SizeId = 'regular' | 'grande'
@@ -210,9 +212,22 @@ export const INGREDIENT_BY_ID: Record<string, Ingredient> = byId(INGREDIENTS)
 
 export const ingredientsOf = (category: CategoryId) => INGREDIENTS.filter((i) => i.category === category)
 
-/** Ruta de la foto real; si no existe, se dibuja el placeholder */
-export const imageSrc = (ingredient: Ingredient) =>
-  `/images/${CATEGORY_BY_ID[ingredient.category].folder}/${ingredient.id}.png`
+/**
+ * Fotos optimizadas (WebP generados con `npm run images`) en dos tamaños,
+ * para que el navegador elija con `srcset`. Si una foto no existe, se dibuja el placeholder.
+ */
+export interface ImageSources {
+  src: string
+  srcSet: string
+}
 
-export const BOWL_IMAGE = '/images/bowl/bowl.png'
-export const HERO_IMAGE = '/images/scene/hero.jpg'
+function sourcesFor(folder: keyof typeof IMAGE_WIDTHS, name: string): ImageSources {
+  const width = IMAGE_WIDTHS[folder]
+  const base = `/images/${folder}/${name}`
+  return { src: `${base}.webp`, srcSet: `${base}-sm.webp ${Math.round(width / 2)}w, ${base}.webp ${width}w` }
+}
+
+export const ingredientImage = (ingredient: Ingredient) =>
+  sourcesFor(CATEGORY_BY_ID[ingredient.category].folder as keyof typeof IMAGE_WIDTHS, ingredient.id)
+
+export const BOWL_IMAGE = sourcesFor('bowl', 'bowl')

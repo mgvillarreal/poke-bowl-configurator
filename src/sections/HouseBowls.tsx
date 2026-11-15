@@ -52,7 +52,7 @@ export function HouseBowls() {
                   style={{ backgroundImage: seigaiha(WAVE_STROKE, BACKDROPS[i % BACKDROPS.length]), backgroundSize: '60px 30px' }}
                 >
                   <RenderWhenVisible className="mx-auto aspect-square max-w-52">
-                    <Bowl config={bowl.config} />
+                    <Bowl config={bowl.config} imageWidth={208} />
                   </RenderWhenVisible>
                 </div>
                 <div className="flex flex-1 flex-col p-5">

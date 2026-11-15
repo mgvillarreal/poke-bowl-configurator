@@ -8,6 +8,15 @@ interface BowlProps {
   config: BowlConfig
   /** Texto que aparece dentro del bowl cuando está vacío */
   emptyHint?: string
+  /** Ancho máximo con que se dibuja el bowl (px CSS): define qué tamaño de foto se pide */
+  imageWidth?: number
+  /** Ancho máximo en pantallas chicas (≤ 640 px) */
+  mobileImageWidth?: number
+  /**
+   * Bowl del contenido principal (hero): sus capas aparecen ya visibles (sin fundido),
+   * para que cuenten como pintadas de inmediato (LCP).
+   */
+  priority?: boolean
   className?: string
 }
 
@@ -15,10 +24,40 @@ interface BowlProps {
 const itemSizeFor = (count: number) => (count <= 2 ? 44 : count <= 4 ? 38 : count <= 6 ? 34 : 31)
 
 /**
+ * Salsas y toppings van al centro y más chicos que el bowl, con bordes difuminados:
+ * así decoran sin tapar la proteína ni los complementos del anillo.
+ */
+const SAUCE_SIZE = 62
+/** Varios toppings: cada uno un poco más chico y desplazado, para que se vean todos */
+const TOPPING_LAYOUT = [
+  { size: 46, dx: 0, dy: 0 },
+  { size: 40, dx: 7, dy: -6 },
+  { size: 36, dx: -7, dy: 6 },
+]
+const SOFT_EDGE = 'radial-gradient(circle, #000 52%, transparent 71%)'
+
+/** Posición centrada (en %) de una capa de cierto tamaño, con desplazamiento opcional */
+const centered = (size: number, dx = 0, dy = 0) => ({
+  left: `${50 - size / 2 + dx}%`,
+  top: `${50 - size / 2 + dy}%`,
+  width: `${size}%`,
+  height: `${size}%`,
+  maskImage: SOFT_EDGE,
+  WebkitMaskImage: SOFT_EDGE,
+})
+
+/**
  * El bowl visto desde arriba. Es una función de `config`:
  * base (disco) → montoncitos en círculo (proteínas y complementos) → salsas → toppings.
  */
-export function Bowl({ config, emptyHint, className = '' }: BowlProps) {
+export function Bowl({
+  config,
+  emptyHint,
+  imageWidth = 480,
+  mobileImageWidth = imageWidth,
+  priority = false,
+  className = '',
+}: BowlProps) {
   const { selection } = config
   const base = INGREDIENT_BY_ID[selection.base[0]]
   const ring = [...selection.protein, ...selection.extra].map((id) => INGREDIENT_BY_ID[id])
@@ -26,6 +65,9 @@ export function Bowl({ config, emptyHint, className = '' }: BowlProps) {
   const toppings = selection.topping.map((id) => INGREDIENT_BY_ID[id])
 
   const size = itemSizeFor(ring.length)
+  /** Ancho en pantalla de una capa que ocupa `percent` % del bowl */
+  const px = (percent: number) => (imageWidth * percent) / 100
+  const mobilePx = (percent: number) => (mobileImageWidth * percent) / 100
   const radius = ring.length === 1 ? 0 : 24
 
   // Pequeño rebote del bowl cada vez que cambia algo
@@ -48,10 +90,10 @@ export function Bowl({ config, emptyHint, className = '' }: BowlProps) {
   return (
     <div ref={scope} className={`relative aspect-square w-full ${className}`}>
       <div className="absolute inset-0 drop-shadow-[0_18px_30px_rgba(20,26,58,0.35)]">
-        <BowlArt />
+        <BowlArt width={imageWidth} mobileWidth={mobileImageWidth} />
       </div>
 
-      <AnimatePresence>
+      <AnimatePresence initial={!priority}>
         {emptyHint && signature === '' && (
           <motion.p
             key="empty"
@@ -67,7 +109,7 @@ export function Bowl({ config, emptyHint, className = '' }: BowlProps) {
       </AnimatePresence>
 
       {/* Base: llena el interior del bowl */}
-      <AnimatePresence>
+      <AnimatePresence initial={!priority}>
         {base && (
           <motion.div
             key={base.id}
@@ -77,13 +119,13 @@ export function Bowl({ config, emptyHint, className = '' }: BowlProps) {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4 }}
           >
-            <IngredientArt ingredient={base} />
+            <IngredientArt ingredient={base} width={px(86)} mobileWidth={mobilePx(86)} />
           </motion.div>
         )}
       </AnimatePresence>
 
       {/* Proteínas y complementos: en círculo, caen desde arriba */}
-      <AnimatePresence>
+      <AnimatePresence initial={!priority}>
         {ring.map((ingredient, i) => {
           const angle = -Math.PI / 2 + (i * 2 * Math.PI) / ring.length
           const x = 50 + radius * Math.cos(angle)
@@ -106,42 +148,45 @@ export function Bowl({ config, emptyHint, className = '' }: BowlProps) {
               exit={{ opacity: 0, scale: 0.4, transition: { duration: 0.2 } }}
               transition={{ type: 'spring', stiffness: 260, damping: 20 }}
             >
-              <IngredientArt ingredient={ingredient} />
+              <IngredientArt ingredient={ingredient} width={px(size)} mobileWidth={mobilePx(size)} />
             </motion.div>
           )
         })}
       </AnimatePresence>
 
       {/* Salsas: se "dibujan" desde el centro hacia afuera */}
-      <AnimatePresence>
+      <AnimatePresence initial={!priority}>
         {sauces.map((sauce, i) => (
           <motion.div
             key={sauce.id}
-            className="pointer-events-none absolute top-[9%] left-[9%] h-[82%] w-[82%]"
-            style={{ rotate: i * 70 }}
+            className="pointer-events-none absolute"
+            style={{ ...centered(SAUCE_SIZE), rotate: i * 80 }}
             initial={{ opacity: 0, clipPath: 'circle(0% at 50% 50%)' }}
             animate={{ opacity: 1, clipPath: 'circle(75% at 50% 50%)' }}
             exit={{ opacity: 0, transition: { duration: 0.2 } }}
             transition={{ duration: 0.7, ease: 'easeOut' }}
           >
-            <IngredientArt ingredient={sauce} />
+            <IngredientArt ingredient={sauce} width={px(SAUCE_SIZE)} mobileWidth={mobilePx(SAUCE_SIZE)} />
           </motion.div>
         ))}
       </AnimatePresence>
 
       {/* Toppings: caen espolvoreados */}
-      <AnimatePresence>
+      <AnimatePresence initial={!priority}>
         {toppings.map((topping, i) => (
           <motion.div
             key={topping.id}
-            className="pointer-events-none absolute top-[9%] left-[9%] h-[82%] w-[82%]"
-            style={{ rotate: i * 40 }}
+            className="pointer-events-none absolute"
+            style={(() => {
+              const { size, dx, dy } = TOPPING_LAYOUT[i % TOPPING_LAYOUT.length]
+              return { ...centered(size, dx, dy), rotate: i * 55 }
+            })()}
             initial={{ opacity: 0, scale: 1.25 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, transition: { duration: 0.2 } }}
             transition={{ type: 'spring', stiffness: 180, damping: 18 }}
           >
-            <IngredientArt ingredient={topping} />
+            <IngredientArt ingredient={topping} width={px(TOPPING_LAYOUT[i % TOPPING_LAYOUT.length].size)} mobileWidth={mobilePx(TOPPING_LAYOUT[i % TOPPING_LAYOUT.length].size)} />
           </motion.div>
         ))}
       </AnimatePresence>

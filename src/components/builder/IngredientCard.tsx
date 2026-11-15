@@ -79,7 +79,7 @@ export function IngredientCard({ ingredient, selected, dimmed, blockedBy, onTogg
         } ${dimmed && !selected && !unavailable ? 'opacity-40 grayscale' : ''}`}
       >
         <RenderWhenVisible className="h-full w-full">
-          <IngredientArt ingredient={ingredient} />
+          <IngredientArt ingredient={ingredient} width={112} />
         </RenderWhenVisible>
       </span>
       <span className="text-sm leading-tight font-bold">{ingredientName(t, ingredient.id)}</span>

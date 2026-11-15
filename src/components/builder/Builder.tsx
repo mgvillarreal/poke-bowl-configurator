@@ -97,7 +97,7 @@ export function Builder() {
                 ナミ
               </span>
               <RenderWhenVisible className="mx-auto aspect-square max-w-[480px]">
-                <Bowl config={config} emptyHint={t.builder.emptyHint} />
+                <Bowl config={config} emptyHint={t.builder.emptyHint} imageWidth={480} mobileImageWidth={310} />
               </RenderWhenVisible>
               <div className="mt-6 text-center">
                 <p className="text-xs font-bold tracking-widest text-mango uppercase">

@@ -1,20 +1,46 @@
 import { motion } from 'motion/react'
+import { useEffect, useState } from 'react'
 import { Bowl } from '../components/bowl/Bowl'
-import { HERO_IMAGE, type BowlConfig } from '../data/menu'
-import { useImage } from '../hooks/useImage'
+import { EMPTY_SELECTION, type BowlConfig } from '../data/menu'
 import { useT } from '../i18n/useLocale'
 import { seigaiha } from '../lib/svg'
 
-/** Bowl de muestra para el hero (mientras no exista scene/hero.jpg) */
+/** Bowl de muestra del hero: Regular, para cargar menos fotos en la primera vista */
 const FEATURED: BowlConfig = {
-  size: 'grande',
+  size: 'regular',
   selection: {
     base: ['rice-white'],
-    protein: ['tuna', 'salmon'],
-    extra: ['avocado', 'mango', 'edamame', 'cucumber', 'red-onion', 'corn'],
+    protein: ['salmon'],
+    extra: ['avocado', 'mango', 'edamame', 'cucumber'],
     sauce: ['spicy-mayo'],
-    topping: ['sesame-seeds', 'scallions'],
+    topping: ['sesame-seeds'],
   },
+}
+
+const EMPTY_BOWL: BowlConfig = { size: 'regular', selection: EMPTY_SELECTION }
+
+/**
+ * El hero muestra primero el bowl vacío y, cuando la página terminó de cargar,
+ * los ingredientes caen uno sobre otro: una mini demo del armador.
+ * Así la foto principal (el bowl) llega sola y rápido, y el resto después.
+ */
+function useFilledAfterLoad(delay = 250) {
+  const [filled, setFilled] = useState(false)
+
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout> | undefined
+    const fill = () => {
+      timer = setTimeout(() => setFilled(true), delay)
+    }
+    if (document.readyState === 'complete') fill()
+    else window.addEventListener('load', fill, { once: true })
+    return () => {
+      window.removeEventListener('load', fill)
+      clearTimeout(timer)
+    }
+  }, [delay])
+
+  return filled
 }
 
 const STICKER_STYLES = [
@@ -25,7 +51,7 @@ const STICKER_STYLES = [
 
 export function Hero() {
   const t = useT()
-  const hasPhoto = useImage(HERO_IMAGE)
+  const filled = useFilledAfterLoad()
 
   return (
     <section
@@ -65,23 +91,15 @@ export function Hero() {
         </motion.div>
 
         <div className="relative mx-auto w-full max-w-md">
-          {hasPhoto ? (
-            <img
-              src={HERO_IMAGE}
-              alt={t.hero.photoAlt}
-              className="aspect-[4/5] w-full rounded-[2.5rem] border-2 border-nori object-cover shadow-sticker-lg"
-            />
-          ) : (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.85, rotate: -20 }}
-              animate={{ opacity: 1, scale: 1, rotate: 0 }}
-              transition={{ type: 'spring', stiffness: 90, damping: 16, delay: 0.15 }}
-            >
-              <motion.div animate={{ rotate: 360 }} transition={{ duration: 90, repeat: Infinity, ease: 'linear' }}>
-                <Bowl config={FEATURED} />
-              </motion.div>
+          <motion.div
+            initial={{ scale: 0.9, rotate: -20 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ type: 'spring', stiffness: 90, damping: 16, delay: 0.15 }}
+          >
+            <motion.div animate={{ rotate: 360 }} transition={{ duration: 90, repeat: Infinity, ease: 'linear' }}>
+              <Bowl config={filled ? FEATURED : EMPTY_BOWL} imageWidth={448} mobileImageWidth={360} priority />
             </motion.div>
-          )}
+          </motion.div>
 
           {STICKER_STYLES.map((s, i) => (
             <motion.span

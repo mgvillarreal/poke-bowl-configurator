@@ -10,12 +10,14 @@
     />
     <meta name="theme-color" content="#ff6b5a" />
     <title>Nami Poke Bar · Arma tu bowl</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!-- Fuentes sin bloquear el primer pintado: se aplican en cuanto cargan -->
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" media="print" onload="this.media='all'" />
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Maru+Gothic:wght@400;500;700&display=swap" /></noscript>
+    <!-- Foto principal del hero: se pide de inmediato, sin esperar al JavaScript (mejor LCP) -->
+    <link
+      rel="preload"
+      as="image"
+      href="/images/bowl/bowl.webp"
+      imagesrcset="/images/bowl/bowl-sm.webp 480w, /images/bowl/bowl.webp 960w"
+      imagesizes="(max-width: 640px) 360px, 448px"
+    />
   </head>
   <body>
     <div id="root"></div>

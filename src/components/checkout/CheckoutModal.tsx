@@ -266,7 +266,7 @@ function CheckoutDialog() {
                             >
                               <div className="flex gap-3">
                                 <div className="w-20 shrink-0">
-                                  <Bowl config={item.config} />
+                                  <Bowl config={item.config} imageWidth={80} />
                                 </div>
                                 <div className="min-w-0 flex-1">
                                   <label htmlFor={`${item.id}-name`} className="sr-only">

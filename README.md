@@ -25,7 +25,8 @@ A landing page with a **real-time visual poke bowl builder**. Start from a house
 - **Size rules** (Regular / Large) limit each category. When you hit a limit, a friendly message suggests upgrading. Switching to a smaller size trims the bowl automatically.
 - **Live totals**: price, calories and protein are always derived from the selection, and animate as they change.
 - **"Surprise me"** builds a random valid bowl. **"Clear bowl"** empties it, and only appears when there is something to clear.
-- **Graceful image fallback**: every ingredient has a drawn placeholder (in its color and shape) until its photo exists, so the app always works, with or without photos.
+- **Bowls that look like the real thing**: sauces and toppings sit in the center, smaller and with soft edges, so every protein and mix-in around the ring stays visible.
+- **Graceful image fallback**: if a photo is missing, the ingredient is drawn as a placeholder in its color and shape, so the app always works.
 
 ### House bowls
 - Four ready-made combos (Hawaiian Classic, Spicy Tuna, Green Vegan, Teriyaki Crunch), each with its price and diet labels.
@@ -59,10 +60,10 @@ A landing page with a **real-time visual poke bowl builder**. Start from a house
 
 | | Performance | Accessibility | Best Practices | SEO |
 |---|:---:|:---:|:---:|:---:|
-| Mobile | 99 | 100 | 100 | 100 |
+| Mobile | 94 | 100 | 100 | 100 |
 | Desktop | 100 | 100 | 100 | 100 |
 
-Mobile: First Contentful Paint 1.8 s · Largest Contentful Paint 1.9 s · Total Blocking Time 40 ms · Cumulative Layout Shift 0.003 (median of 5 runs, Lighthouse 12 default mobile throttling). Measured without the ingredient photos, which aren't in the repository yet (see [Images](#images)).
+Mobile: First Contentful Paint 2.3 s · Largest Contentful Paint 2.6 s · Total Blocking Time 0 ms · Cumulative Layout Shift 0.001 · 611 KiB transferred (median of 5 runs, Lighthouse 12 default mobile throttling). Measured **with the real ingredient photos**.
 
 **Automated accessibility audit:** axe-core reports **0 violations** of WCAG 2.0 / 2.1 levels A and AA in 8 key states (Spanish and English home, empty bowl, dietary preferences with conflicting ingredients, and checkout with several bowls, review, validation errors and confirmation), on both desktop and mobile. These checks run on every push.
 
@@ -103,8 +104,11 @@ Built so it can be used with a keyboard and a screen reader, not only with a mou
 - **UI as a function of state**: price, nutrition, the bowl's name and its drawing are derived from the selection, never stored separately.
 - **Notices stored as data, not text**: the store keeps a typed message, and it is translated when shown, so changing the language never leaves stale text behind.
 - **Typed end to end** with TypeScript, linted with oxlint.
-- **No layout shift from missing assets**: images are checked once and cached; placeholders render in the same space.
+- **No layout shift from missing assets**: photos and placeholders render in the same reserved space, and a missing photo is remembered so it isn't requested again.
 - **Fast first paint**: web fonts load without blocking rendering, and metric-matched fallback fonts (Arial adjusted to the brand fonts' width) keep text from jumping when the brand fonts arrive. The main hero text isn't faded in, so it counts as painted right away.
+- **Optimized photos**: each photo is a WebP in two sizes (full and half width), served with `srcset` and `sizes` so phones download the small one. 62 MB of source PNGs became ~3.9 MB of WebP (both sizes), and the first view transfers ~611 KiB in total.
+- **Self-hosted fonts**: only the Latin subset of the brand fonts (~48 KB in total), bundled with the app; no third-party font CSS.
+- **Fast hero**: the hero's bowl image is preloaded from the HTML, and its ingredients drop in once the page has loaded, a small demo of the builder that keeps the first view light.
 - **Only draw what's about to be seen**: bowls and ingredient art mount when they approach the viewport, at low priority (`startTransition`), so scrolling and taps stay responsive. This cut the initial DOM from ~4,500 to ~1,000 elements.
 
 ## Testing
@@ -127,13 +131,14 @@ Tests find elements by **role and accessible name** (`getByRole('button', { name
 
 ## Tech stack
 
-React 19 · TypeScript · Vite · Tailwind CSS v4 · Motion · Zustand · Playwright · axe-core
+React 19 · TypeScript · Vite · Tailwind CSS v4 · Motion · Zustand · Playwright · axe-core · sharp · Fontsource
 
 ## Project structure
 
 ```
 src/
   data/menu.ts            ← single source of truth: sizes, categories, ingredients
+  data/image-widths.json  ← photo widths per folder (shared with the image script)
   i18n/                   ← Spanish/English messages and the language store
   lib/bowl.ts             ← derived values (price, nutrition, bowl name)
   lib/diet.ts             ← diet rules derived from what each ingredient contains
@@ -146,14 +151,21 @@ src/
     ui/                   ← logo, flags, language switch, toast, diet labels, lazy rendering
   sections/               ← top bar, header, hero, house bowls, how it works, footer
 e2e/                      ← Playwright end-to-end and accessibility tests
+scripts/optimize-images.mjs ← PNG → WebP in two sizes (npm run images)
 .github/workflows/ci.yml  ← lint, build and tests on every push
 ```
 
 ## Images
 
-Ingredient photos live in `public/images/` and are generated with AI using a shared style block, so every layer has the same angle and lighting. The prompts are in [`docs/prompts-imagenes.md`](docs/prompts-imagenes.md) (in Spanish).
+Ingredient photos are generated with AI using a shared style block, so every layer has the same top-down angle and lighting. The prompts are in [`docs/prompts-imagenes.md`](docs/prompts-imagenes.md) (in Spanish).
 
-The photos are still being produced and optimized for the web. Until they're added to the repository, each ingredient renders as its drawn placeholder.
+- **Source**: high-resolution PNGs with transparency in `assets/images/` (kept out of the repository).
+- **Published**: `npm run images` turns them into WebP files in `public/images/`, in two widths per photo. Widths per folder live in [`src/data/image-widths.json`](src/data/image-widths.json), shared by the script and the app.
+
+| | Source PNG | Published WebP (both sizes) |
+|---|---|---|
+| 27 photos | 62 MB | ~3.9 MB |
+| A typical ingredient | ~2.3 MB | ~20 KB (small) / ~60 KB (full) |
 
 ## Getting started
 
@@ -162,6 +174,7 @@ npm install
 npm run dev      # http://localhost:5173
 npm run build    # type-check + production build
 npm run lint
+npm run images       # regenerate WebP photos from assets/images (needs the source PNGs)
 npm run test:e2e     # all end-to-end tests (desktop + mobile)
 npm run test:a11y    # only the accessibility audit
 npm run test:e2e:ui  # Playwright UI mode

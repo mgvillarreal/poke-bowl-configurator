@@ -27,3 +27,6 @@ dist-ssr
 test-results
 playwright-report
 blob-report
+
+# Fotos originales en alta resolución (fuente de `npm run images`)
+assets/images/

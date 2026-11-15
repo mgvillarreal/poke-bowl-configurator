@@ -20,7 +20,6 @@ export interface Messages {
     lead: string
     ctaBuild: string
     ctaHow: string
-    photoAlt: string
     stickers: [string, string, string]
   }
   builder: {
@@ -144,7 +143,6 @@ const es: Messages = {
     lead: 'Poke bowls frescos, a tu manera. Elige base, proteína y toppings, y míralo armarse en tiempo real.',
     ctaBuild: 'Armar mi bowl →',
     ctaHow: '¿Cómo funciona?',
-    photoAlt: 'Poke bowl de salmón, atún, palta y mango',
     stickers: ['100% fresco', 'Listo en 15 min', '¡Nuevo! Mango 🥭'],
   },
   builder: {
@@ -360,7 +358,6 @@ const en: Messages = {
     lead: 'Fresh poke bowls, your way. Pick a base, protein and toppings, and watch it come together in real time.',
     ctaBuild: 'Build my bowl →',
     ctaHow: 'How it works',
-    photoAlt: 'Poke bowl with salmon, tuna, avocado and mango',
     stickers: ['100% fresh', 'Ready in 15 min', 'New! Mango 🥭'],
   },
   builder: {
