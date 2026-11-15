@@ -41,14 +41,14 @@ export function HouseBowls() {
             return (
               <motion.li
                 key={bowl.id}
-                className="flex flex-col overflow-hidden rounded-[2rem] border-2 border-nori bg-white shadow-sticker-lg"
+                className="flex flex-col overflow-hidden rounded-[2rem] border-2 border-nori/15 bg-white"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-60px' }}
                 transition={{ delay: i * 0.08, duration: 0.45 }}
               >
                 <div
-                  className="border-b-2 border-nori p-6"
+                  className="p-6"
                   style={{ backgroundImage: seigaiha(WAVE_STROKE, BACKDROPS[i % BACKDROPS.length]), backgroundSize: '60px 30px' }}
                 >
                   <RenderWhenVisible className="mx-auto aspect-square max-w-52">
@@ -82,7 +82,7 @@ export function HouseBowls() {
                     <button
                       type="button"
                       onClick={() => addToCart(bowl.config, '', bowl.name)}
-                      className="w-full rounded-xl border-2 border-nori bg-coral px-3 py-2 text-sm font-bold text-nori shadow-sticker transition-colors hover:bg-coral-dark focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-nori"
+                      className="w-full rounded-xl border-2 border-nori bg-coral px-3 py-2 text-sm font-bold text-nori transition-colors hover:bg-coral-dark focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-nori"
                     >
                       {t.houseBowls.add}
                       <span className="sr-only"> ({bowl.name})</span>

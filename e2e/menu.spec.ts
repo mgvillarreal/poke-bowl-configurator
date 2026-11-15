@@ -51,7 +51,7 @@ test.describe('Preferencias de dieta', () => {
     await expect(card(page, /Atún shoyu/)).toHaveAttribute('aria-disabled', 'true')
     await expect(card(page, /Atún shoyu/)).toContainText('No es vegano')
     await expect(card(page, /Tofu crujiente/)).not.toHaveAttribute('aria-disabled', 'true')
-    await expect(card(page, /Tofu crujiente/)).toContainText('Vegano')
+    await expect(card(page, /Tofu crujiente/)).not.toContainText('No es vegano')
   })
 
   test('no deja agregar un ingrediente que no cumple', async ({ page }) => {

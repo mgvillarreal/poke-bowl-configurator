@@ -7,7 +7,7 @@ export function Footer() {
   const t = useT()
 
   return (
-    <footer className="bg-nori pt-12 pb-24 text-rice">
+    <footer className="bg-nori pt-12 pb-8 text-rice">
       <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
         <div>
           <Logo label={t.header.home} light />

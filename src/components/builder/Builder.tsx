@@ -6,6 +6,7 @@ import { failedFilters } from '../../lib/diet'
 import { seigaiha } from '../../lib/svg'
 import { countSelected, useBowlStore } from '../../store/bowlStore'
 import { Bowl } from '../bowl/Bowl'
+import { ArrowLeftIcon, ArrowRightIcon, BowlIcon, TrashIcon } from '../ui/Icons'
 import { RenderWhenVisible } from '../ui/RenderWhenVisible'
 import { DietFilters } from './DietFilters'
 import { IngredientCard } from './IngredientCard'
@@ -57,18 +58,9 @@ export function Builder() {
                   exit={{ opacity: 0, scale: 0.8 }}
                   whileHover={{ y: -2 }}
                   whileTap={{ scale: 0.95 }}
-                  className="flex items-center gap-2 rounded-2xl border-2 border-nori bg-white px-4 py-2 font-bold shadow-sticker focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-nori"
+                  className="flex items-center gap-2 rounded-2xl border-2 border-nori/30 bg-white px-4 py-2 font-bold transition-colors hover:border-nori focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-nori"
                 >
-                  <svg viewBox="0 0 20 20" className="h-4 w-4" aria-hidden>
-                    <path
-                      d="M4 6h12M8 6V4h4v2m-6 0 .7 10h6.6L14 6M8.5 9v4.5M11.5 9v4.5"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth={1.8}
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+                  <TrashIcon size={17} />
                   {t.builder.clear}
                 </motion.button>
               )}
@@ -79,8 +71,9 @@ export function Builder() {
               onClick={surprise}
               whileHover={{ rotate: -2, y: -2 }}
               whileTap={{ scale: 0.95 }}
-              className="rounded-2xl border-2 border-nori bg-mango px-4 py-2 font-bold shadow-sticker focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-nori"
+              className="flex items-center gap-2 rounded-2xl border-2 border-nori bg-mango px-4 py-2 font-bold focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-nori"
             >
+              <BowlIcon size={18} />
               {t.builder.surprise}
             </motion.button>
           </div>
@@ -157,15 +150,17 @@ export function Builder() {
 
               <div className="mt-6 flex justify-between">
                 {prev ? (
-                  <button type="button" onClick={() => setStep(prev.id)} className="font-bold text-nori/70 hover:text-nori">
-                    ← {t.categories[prev.id].label}
+                  <button type="button" onClick={() => setStep(prev.id)} className="flex items-center gap-1.5 font-bold text-nori/75 hover:text-nori">
+                    <ArrowLeftIcon size={18} />
+                    {t.categories[prev.id].label}
                   </button>
                 ) : (
                   <span />
                 )}
                 {next && (
-                  <button type="button" onClick={() => setStep(next.id)} className="font-bold text-coral-ink hover:text-nori">
+                  <button type="button" onClick={() => setStep(next.id)} className="flex items-center gap-1.5 font-bold text-coral-ink hover:text-nori">
                     {t.builder.next(t.categories[next.id].label)}
+                    <ArrowRightIcon size={18} />
                   </button>
                 )}
               </div>

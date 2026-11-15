@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { useT } from '../../i18n/useLocale'
+import { AlertIcon, CheckIcon } from '../ui/Icons'
 import { DIET_FILTERS, conflictsIn } from '../../lib/diet'
 import { useBowlStore } from '../../store/bowlStore'
 
@@ -33,11 +34,7 @@ export function DietFilters() {
                 aria-hidden
                 className={`flex h-4 w-4 items-center justify-center rounded-full border-2 border-nori ${active ? 'bg-nori text-rice' : ''}`}
               >
-                {active && (
-                  <svg viewBox="0 0 16 16" className="h-2.5 w-2.5">
-                    <path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                )}
+                {active && <CheckIcon size={11} strokeWidth={3.5} />}
               </span>
               {t.diet.filters[filter]}
             </button>
@@ -55,7 +52,10 @@ export function DietFilters() {
               className="overflow-hidden"
             >
               <p className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-2xl border-2 border-coral-ink bg-sakura px-4 py-2 text-sm font-bold">
-                <span>⚠ {t.diet.conflicts(conflicts)}</span>
+                <span className="flex items-center gap-2">
+                  <AlertIcon size={16} className="shrink-0 text-coral-ink" />
+                  {t.diet.conflicts(conflicts)}
+                </span>
                 <button
                   type="button"
                   onClick={removeConflicts}

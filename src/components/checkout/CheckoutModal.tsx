@@ -7,6 +7,7 @@ import { bowlName, bowlTotals, ingredientName, selectedIngredients } from '../..
 import { formatMoney } from '../../lib/format'
 import { useBowlStore, type CartItem } from '../../store/bowlStore'
 import { Bowl } from '../bowl/Bowl'
+import { ArrowLeftIcon, CardIcon, CashIcon, CheckIcon, CloseIcon, PlusIcon, TrashIcon } from '../ui/Icons'
 
 type Step = 'review' | 'details' | 'processing' | 'done'
 type Field = 'name' | 'phone' | 'address'
@@ -190,7 +191,7 @@ function CheckoutDialog() {
         aria-labelledby={titleId}
         tabIndex={-1}
         onKeyDown={onKeyDown}
-        className="max-h-[92dvh] w-full max-w-lg overflow-y-auto rounded-t-[2rem] border-2 border-nori bg-rice shadow-sticker-lg outline-none sm:rounded-[2rem]"
+        className="max-h-[92dvh] w-full max-w-lg overflow-y-auto rounded-t-[2rem] border-2 border-nori bg-rice outline-none sm:rounded-[2rem]"
         initial={{ y: 60, opacity: 0, scale: 0.98 }}
         animate={{ y: 0, opacity: 1, scale: 1 }}
         exit={{ y: 40, opacity: 0, scale: 0.98 }}
@@ -206,7 +207,7 @@ function CheckoutDialog() {
                     i < stepIndex ? 'bg-matcha' : i === stepIndex ? 'bg-coral text-nori' : 'bg-white text-nori/75'
                   }`}
                 >
-                  {i < stepIndex ? '✓' : i + 1}
+                  {i < stepIndex ? <CheckIcon size={13} strokeWidth={3} /> : i + 1}
                 </span>
                 <span className={`hidden sm:inline ${i === stepIndex ? '' : 'text-nori/75'}`}>{label}</span>
                 {i < c.steps.length - 1 && <span aria-hidden className="h-0.5 w-4 bg-nori/20" />}
@@ -220,9 +221,7 @@ function CheckoutDialog() {
             aria-label={c.close}
             className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-nori bg-white transition-transform hover:rotate-90 disabled:opacity-40 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-nori"
           >
-            <svg viewBox="0 0 16 16" className="h-4 w-4" aria-hidden>
-              <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" />
-            </svg>
+            <CloseIcon size={18} strokeWidth={2.5} />
           </button>
         </div>
 
@@ -294,16 +293,7 @@ function CheckoutDialog() {
                                   aria-label={t.cart.remove(label)}
                                   className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 border-nori/30 transition-colors hover:border-nori hover:bg-sakura focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-nori"
                                 >
-                                  <svg viewBox="0 0 20 20" className="h-4 w-4" aria-hidden>
-                                    <path
-                                      d="M4 6h12M8 6V4h4v2m-6 0 .7 10h6.6L14 6"
-                                      fill="none"
-                                      stroke="currentColor"
-                                      strokeWidth={1.8}
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                    />
-                                  </svg>
+                                  <TrashIcon size={17} />
                                 </button>
                               </div>
 
@@ -338,8 +328,9 @@ function CheckoutDialog() {
                     <button
                       type="button"
                       onClick={goToBuilder}
-                      className="mt-3 w-full rounded-2xl border-2 border-nori/50 px-4 py-3 font-bold transition-colors hover:border-nori hover:bg-white focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-nori"
+                      className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-nori/50 px-4 py-3 font-bold transition-colors hover:border-nori hover:bg-white focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-nori"
                     >
+                      <PlusIcon size={18} />
                       {t.cart.addAnother}
                     </button>
 
@@ -479,8 +470,8 @@ function CheckoutDialog() {
                 <fieldset className="mt-5">
                   <legend className="font-bold">{c.payment}</legend>
                   <div className="mt-2 flex flex-wrap gap-2">
-                    <ChoiceCard name="payment" checked={form.payment === 'card'} onChange={() => update('payment', 'card')} label={`💳 ${c.card}`} compact />
-                    <ChoiceCard name="payment" checked={form.payment === 'cash'} onChange={() => update('payment', 'cash')} label={`💵 ${c.cash}`} compact />
+                    <ChoiceCard name="payment" checked={form.payment === 'card'} onChange={() => update('payment', 'card')} label={c.card} icon={<CardIcon size={18} />} compact />
+                    <ChoiceCard name="payment" checked={form.payment === 'cash'} onChange={() => update('payment', 'cash')} label={c.cash} icon={<CashIcon size={18} />} compact />
                   </div>
                 </fieldset>
 
@@ -491,7 +482,8 @@ function CheckoutDialog() {
                 </Breakdown>
 
                 <div className="mt-6 flex items-center justify-between gap-4">
-                  <button type="button" onClick={() => setStep('review')} className="font-bold text-nori/70 hover:text-nori">
+                  <button type="button" onClick={() => setStep('review')} className="flex items-center gap-1.5 font-bold text-nori/75 hover:text-nori">
+                    <ArrowLeftIcon size={18} />
                     {c.back}
                   </button>
                   <PrimaryButton onClick={confirm} inline>
@@ -517,7 +509,7 @@ function CheckoutDialog() {
             {step === 'done' && (
               <div className="flex flex-col items-center text-center">
                 <motion.div
-                  className="flex h-20 w-20 items-center justify-center rounded-full border-2 border-nori bg-matcha shadow-sticker"
+                  className="flex h-20 w-20 items-center justify-center rounded-full border-2 border-nori bg-matcha"
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: 'spring', stiffness: 260, damping: 15 }}
@@ -643,9 +635,10 @@ function ChoiceCard(props: {
   onChange: () => void
   label: string
   detail?: string
+  icon?: ReactNode
   compact?: boolean
 }) {
-  const { name, checked, onChange, label, detail, compact } = props
+  const { name, checked, onChange, label, detail, icon, compact } = props
   return (
     <label
       className={`flex cursor-pointer flex-col rounded-2xl border-2 transition-colors has-checked:border-nori has-checked:bg-sakura has-focus-visible:outline-3 has-focus-visible:outline-offset-2 has-focus-visible:outline-nori ${
@@ -653,7 +646,10 @@ function ChoiceCard(props: {
       } border-nori/40 bg-white hover:border-nori`}
     >
       <input type="radio" name={name} checked={checked} onChange={onChange} className="sr-only" />
-      <span className="font-bold">{label}</span>
+      <span className="flex items-center gap-2 font-bold">
+        {icon}
+        {label}
+      </span>
       {detail && <span className="text-xs text-nori/75">{detail}</span>}
     </label>
   )

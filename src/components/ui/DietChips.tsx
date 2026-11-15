@@ -4,16 +4,20 @@ interface DietChipsProps {
   vegan?: boolean
   glutenFree?: boolean
   seafood?: boolean
+  gluten?: boolean
+  notVegan?: boolean
   className?: string
 }
 
 /** Etiquetas de dieta en texto (no solo color ni íconos): legibles para todos */
-export function DietChips({ vegan, glutenFree, seafood, className = '' }: DietChipsProps) {
+export function DietChips({ vegan, glutenFree, seafood, gluten, notVegan, className = '' }: DietChipsProps) {
   const t = useT()
   const chips = [
     vegan && { label: t.diet.labels.vegan, style: 'bg-matcha/50' },
     glutenFree && { label: t.diet.labels.glutenFree, style: 'bg-mango/50' },
     seafood && { label: t.diet.labels.seafood, style: 'bg-sakura' },
+    gluten && { label: t.diet.labels.gluten, style: 'bg-mango/50' },
+    notVegan && { label: t.diet.labels.notVegan, style: 'bg-nori/10' },
   ].filter(Boolean) as { label: string; style: string }[]
 
   if (chips.length === 0) return null

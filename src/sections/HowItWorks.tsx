@@ -21,7 +21,7 @@ export function HowItWorks() {
           {DECOR.map((decor, i) => (
             <motion.article
               key={decor.n}
-              className={`relative overflow-hidden rounded-[2rem] border-2 border-nori p-6 shadow-sticker-lg ${decor.bg}`}
+              className={`relative overflow-hidden rounded-[2rem] p-6 ${decor.bg}`}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-80px' }}

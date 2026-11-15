@@ -92,7 +92,7 @@ test('"Agregar al pedido" lleva al paso que falta', async ({ page }) => {
 test('"Sorpréndeme" arma un bowl válido', async ({ page }) => {
   await page.getByRole('button', { name: /Sorpréndeme/ }).click()
 
-  await expect(page.getByText('🎲 ¡Bowl sorpresa! Ajústalo a tu gusto.')).toBeVisible()
+  await expect(page.getByText('¡Bowl sorpresa! Ajústalo a tu gusto.')).toBeVisible()
   await expect(page.getByRole('tab', { name: /Base/ })).toContainText('1/1')
   await expect(page.getByRole('tab', { name: /Proteína/ })).toContainText('1/1')
   await expect(page.getByRole('tab', { name: /Complementos/ })).toContainText('4/4')

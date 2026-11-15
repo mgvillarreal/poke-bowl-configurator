@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from 'motion/react'
+import { BagIcon, ScooterIcon } from '../components/ui/Icons'
 import { LanguageSwitch } from '../components/ui/LanguageSwitch'
 import { Logo } from '../components/ui/Logo'
 import { useT } from '../i18n/useLocale'
@@ -11,7 +12,10 @@ export function TopBar() {
   return (
     <div className="bg-nori text-rice">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-1.5 sm:px-6">
-        <p className="truncate text-xs font-medium sm:text-sm">{t.topBar}</p>
+        <p className="flex min-w-0 items-center gap-2 text-xs font-medium sm:text-sm">
+          <ScooterIcon size={18} className="shrink-0 text-mango" />
+          <span className="truncate">{t.topBar}</span>
+        </p>
         <LanguageSwitch />
       </div>
     </div>
@@ -49,11 +53,9 @@ export function Header() {
                 initial={{ opacity: 0, scale: 0.7 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.7 }}
-                className="flex items-center gap-1.5 rounded-xl border-2 border-nori bg-white px-3 py-2 text-sm font-bold shadow-sticker transition-transform hover:-translate-y-0.5 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-nori"
+                className="flex items-center gap-1.5 rounded-xl border-2 border-nori bg-white px-3 py-2 text-sm font-bold transition-colors hover:bg-rice focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-nori"
               >
-                <svg viewBox="0 0 20 20" className="h-4 w-4" aria-hidden>
-                  <path d="M4 7h12l-1 10H5L4 7zm3 0V5.5a3 3 0 016 0V7" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinejoin="round" />
-                </svg>
+                <BagIcon size={17} />
                 <motion.span key={bowls} initial={{ scale: 1.5 }} animate={{ scale: 1 }} className="tabular-nums">
                   {t.cart.button(bowls)}
                 </motion.span>

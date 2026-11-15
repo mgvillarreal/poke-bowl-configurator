@@ -19,8 +19,7 @@ export interface Messages {
     accent: string
     lead: string
     ctaBuild: string
-    ctaHow: string
-    stickers: [string, string, string]
+    ctaHouse: string
   }
   builder: {
     eyebrow: string
@@ -100,7 +99,7 @@ export interface Messages {
   diet: {
     legend: string
     filters: Record<DietFilter, string>
-    labels: { vegan: string; glutenFree: string; seafood: string }
+    labels: { vegan: string; glutenFree: string; seafood: string; gluten: string; notVegan: string }
     reasons: Record<DietFilter, string>
     conflicts: (n: number) => string
     removeConflicts: string
@@ -134,21 +133,20 @@ const es: Messages = {
     order: 'Ordenar',
     language: 'Idioma',
   },
-  topBar: '🍚 Recoge en 15 min · Envío a domicilio',
+  topBar: 'Recoge en 15 min · Envío a domicilio',
   hero: {
     badge: 'Poke bar · ポケ',
     line1: 'Arma',
     line2: 'tu',
     accent: 'ola.',
     lead: 'Poke bowls frescos, a tu manera. Elige base, proteína y toppings, y míralo armarse en tiempo real.',
-    ctaBuild: 'Armar mi bowl →',
-    ctaHow: '¿Cómo funciona?',
-    stickers: ['100% fresco', 'Listo en 15 min', '¡Nuevo! Mango 🥭'],
+    ctaBuild: 'Armar mi bowl',
+    ctaHouse: 'o elige un bowl de la casa',
   },
   builder: {
     eyebrow: 'Paso a paso',
     title: 'Arma tu bowl',
-    surprise: '🎲 Sorpréndeme',
+    surprise: 'Sorpréndeme',
     clear: 'Vaciar bowl',
     yourBowl: (size) => `Tu bowl · ${size}`,
     emptyName: 'Tu bowl está vacío',
@@ -157,7 +155,7 @@ const es: Messages = {
     chooseOne: 'Elige 1',
     upTo: (n) => `Hasta ${n}`,
     chosen: (n) => `${n} elegido${n === 1 ? '' : 's'}`,
-    next: (label) => `Siguiente: ${label} →`,
+    next: (label) => `Siguiente: ${label}`,
     sizeGroup: 'Tamaño del bowl',
     steps: 'Pasos para armar tu bowl',
   },
@@ -186,7 +184,7 @@ const es: Messages = {
       case 'resized':
         return `Ajustamos tu bowl al tamaño ${es.sizes[m.size].label}.`
       case 'surprise':
-        return '🎲 ¡Bowl sorpresa! Ajústalo a tu gusto.'
+        return '¡Bowl sorpresa! Ajústalo a tu gusto.'
       case 'needBase':
         return 'Primero elige una base para tu bowl.'
       case 'needProtein':
@@ -252,7 +250,7 @@ const es: Messages = {
     free: 'Gratis',
     total: 'Total',
     continue: 'Continuar',
-    back: '← Volver',
+    back: 'Volver',
     confirm: (total) => `Confirmar pedido · ${total}`,
     processing: 'Enviando tu pedido a la cocina…',
     errors: {
@@ -285,7 +283,7 @@ const es: Messages = {
   diet: {
     legend: 'Preferencias',
     filters: { vegan: 'Vegano', glutenFree: 'Sin gluten', noSeafood: 'Sin pescados ni mariscos' },
-    labels: { vegan: 'Vegano', glutenFree: 'Sin gluten', seafood: 'Del mar' },
+    labels: { vegan: 'Vegano', glutenFree: 'Sin gluten', seafood: 'Del mar', gluten: 'Contiene gluten', notVegan: 'No vegano' },
     reasons: { vegan: 'No es vegano', glutenFree: 'Contiene gluten', noSeafood: 'Pescado o mariscos' },
     conflicts: (n) =>
       n === 1
@@ -301,7 +299,7 @@ const es: Messages = {
     defaultName: (n) => `Bowl ${n}`,
     nameLabel: (bowl) => `¿Para quién es ${bowl}?`,
     remove: (bowl) => `Quitar ${bowl} del pedido`,
-    addAnother: '＋ Armar otro bowl',
+    addAnother: 'Armar otro bowl',
     empty: 'Tu pedido está vacío.',
     emptyCta: 'Armar un bowl',
     itemsCount: (n) => `${n} bowl${n === 1 ? '' : 's'}`,
@@ -349,21 +347,20 @@ const en: Messages = {
     order: 'Order',
     language: 'Language',
   },
-  topBar: '🍚 Ready for pickup in 15 min · Delivery available',
+  topBar: 'Ready for pickup in 15 min · Delivery available',
   hero: {
     badge: 'Poke bar · ポケ',
     line1: 'Ride',
     line2: 'your',
     accent: 'wave.',
     lead: 'Fresh poke bowls, your way. Pick a base, protein and toppings, and watch your bowl come together in real time.',
-    ctaBuild: 'Build my bowl →',
-    ctaHow: 'How it works',
-    stickers: ['100% fresh', 'Ready in 15 min', 'New! Mango 🥭'],
+    ctaBuild: 'Build my bowl',
+    ctaHouse: 'or pick a house bowl',
   },
   builder: {
     eyebrow: 'Step by step',
     title: 'Build your bowl',
-    surprise: '🎲 Surprise me',
+    surprise: 'Surprise me',
     clear: 'Clear bowl',
     yourBowl: (size) => `Your bowl · ${size}`,
     emptyName: 'Your bowl is empty',
@@ -372,7 +369,7 @@ const en: Messages = {
     chooseOne: 'Pick 1',
     upTo: (n) => `Up to ${n}`,
     chosen: (n) => `${n} selected`,
-    next: (label) => `Next: ${label} →`,
+    next: (label) => `Next: ${label}`,
     sizeGroup: 'Bowl size',
     steps: 'Steps to build your bowl',
   },
@@ -401,7 +398,7 @@ const en: Messages = {
       case 'resized':
         return `We trimmed your bowl to fit the ${en.sizes[m.size].label} size.`
       case 'surprise':
-        return '🎲 Surprise bowl! Tweak it to your taste.'
+        return 'Surprise bowl! Tweak it to your taste.'
       case 'needBase':
         return 'Pick a base for your bowl first.'
       case 'needProtein':
@@ -467,7 +464,7 @@ const en: Messages = {
     free: 'Free',
     total: 'Total',
     continue: 'Continue',
-    back: '← Back',
+    back: 'Back',
     confirm: (total) => `Place order · ${total}`,
     processing: 'Sending your order to the kitchen…',
     errors: {
@@ -500,7 +497,7 @@ const en: Messages = {
   diet: {
     legend: 'Dietary preferences',
     filters: { vegan: 'Vegan', glutenFree: 'Gluten-free', noSeafood: 'No fish or seafood' },
-    labels: { vegan: 'Vegan', glutenFree: 'Gluten-free', seafood: 'Seafood' },
+    labels: { vegan: 'Vegan', glutenFree: 'Gluten-free', seafood: 'Seafood', gluten: 'Contains gluten', notVegan: 'Not vegan' },
     reasons: { vegan: 'Not vegan', glutenFree: 'Contains gluten', noSeafood: 'Contains seafood' },
     conflicts: (n) =>
       n === 1 ? '1 ingredient in your bowl doesn’t match your preferences.' : `${n} ingredients in your bowl don’t match your preferences.`,
@@ -514,7 +511,7 @@ const en: Messages = {
     defaultName: (n) => `Bowl ${n}`,
     nameLabel: (bowl) => `Who’s ${bowl} for?`,
     remove: (bowl) => `Remove ${bowl} from order`,
-    addAnother: '＋ Build another bowl',
+    addAnother: 'Build another bowl',
     empty: 'Your order is empty.',
     emptyCta: 'Build a bowl',
     itemsCount: (n) => `${n} bowl${n === 1 ? '' : 's'}`,

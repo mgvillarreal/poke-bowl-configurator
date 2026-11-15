@@ -32,7 +32,7 @@ export function SummaryBar() {
   }
 
   return (
-    <div className="rounded-3xl border-2 border-nori bg-white p-4 shadow-sticker-lg">
+    <div className="rounded-3xl border-2 border-nori/15 bg-white p-4">
       <label htmlFor={nameId} className="text-sm font-bold">
         {t.cart.forWhom}
       </label>

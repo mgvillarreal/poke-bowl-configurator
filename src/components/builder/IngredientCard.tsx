@@ -5,6 +5,7 @@ import { ingredientName } from '../../lib/bowl'
 import { dietLabels, type DietFilter } from '../../lib/diet'
 import { formatMoney } from '../../lib/format'
 import { DietChips } from '../ui/DietChips'
+import { AlertIcon, CheckIcon } from '../ui/Icons'
 import { RenderWhenVisible } from '../ui/RenderWhenVisible'
 import { IngredientArt } from '../art/IngredientArt'
 
@@ -40,8 +41,8 @@ export function IngredientCard({ ingredient, selected, dimmed, blockedBy, onTogg
       className={`group relative flex flex-col items-center rounded-3xl border-2 p-3 text-center transition-[background-color,border-color,box-shadow] focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-nori ${
         selected
           ? blocked
-            ? 'border-coral-ink bg-sakura shadow-sticker'
-            : 'border-nori bg-sakura shadow-sticker'
+            ? 'border-coral-ink bg-sakura'
+            : 'border-nori bg-sakura'
           : unavailable
             ? 'cursor-not-allowed border-nori/40 bg-white'
             : 'border-nori/10 bg-white hover:border-nori/40'
@@ -65,9 +66,7 @@ export function IngredientCard({ ingredient, selected, dimmed, blockedBy, onTogg
             transition={{ type: 'spring', stiffness: 500, damping: 22 }}
             aria-hidden
           >
-            <svg viewBox="0 0 16 16" className="h-4 w-4">
-              <path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" strokeWidth={2.4} strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
+            <CheckIcon size={15} strokeWidth={3} />
           </motion.span>
         )}
       </AnimatePresence>
@@ -88,8 +87,9 @@ export function IngredientCard({ ingredient, selected, dimmed, blockedBy, onTogg
       </span>
 
       {blocked ? (
-        <span className="mt-1.5 text-[11px] leading-tight font-bold text-coral-ink">
-          ⚠ {blockedBy.map((f) => t.diet.reasons[f]).join(' · ')}
+        <span className="mt-1.5 flex items-center gap-1 text-[11px] leading-tight font-bold text-coral-ink">
+          <AlertIcon size={13} className="shrink-0" />
+          {blockedBy.map((f) => t.diet.reasons[f]).join(' · ')}
         </span>
       ) : (
         <DietChips {...dietLabels(ingredient)} className="mt-1.5" />

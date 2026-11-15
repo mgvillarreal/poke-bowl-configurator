@@ -18,12 +18,17 @@ export const fits = (ingredient: Ingredient, filter: DietFilter) => !has(ingredi
 /** Filtros activos que el ingrediente NO cumple (vacío = apto) */
 export const failedFilters = (ingredient: Ingredient, active: DietFilter[]) => active.filter((f) => !fits(ingredient, f))
 
-/** Etiquetas que se muestran en cada tarjeta */
+/**
+ * Etiquetas de cada tarjeta: solo lo que distingue al ingrediente.
+ * Lo vegano y sin gluten es la mayoría, así que no se marca (sería ruido).
+ */
 export function dietLabels(ingredient: Ingredient) {
+  const seafood = has(ingredient, ['fish', 'shellfish'])
   return {
-    vegan: fits(ingredient, 'vegan'),
-    glutenFree: fits(ingredient, 'glutenFree'),
-    seafood: has(ingredient, ['fish', 'shellfish']),
+    seafood,
+    gluten: has(ingredient, ['gluten']),
+    // "Del mar" ya implica que no es vegano: no se repite
+    notVegan: !seafood && !fits(ingredient, 'vegan'),
   }
 }
 
